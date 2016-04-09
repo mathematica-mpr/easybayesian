@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 
 # Why should I use it?
 
+This package makes using STAN easy!
+
 # How do I use it?
 
 # How do I get it?
