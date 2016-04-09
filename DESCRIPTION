@@ -1,0 +1,12 @@
+Package: lmstan
+Type: Package
+Title: Bayesian Linear Model
+Version: 0.1.5
+Authors@R: as.person(c(
+    "Mariel Finucane <marielfinucane@gmail.com> [aut]",
+    "Ignacio Martinez <ignacio@protonmail.ch> [aut, cre]"
+  ))
+Description: This package makes runing a linear regression using STAN easy.
+License: MIT
+LazyData: TRUE
+RoxygenNote: 5.0.1
