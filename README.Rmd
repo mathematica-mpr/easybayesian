@@ -61,6 +61,13 @@ gof.table(lm1, caption = "My caption!")
 posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
 ```
 
+### Interpret
+
+```{r}
+interpret(model = lm1, name = Tr, cutoff = 0)
+```
+
+
 ## Clustered
 
 ```{r}
@@ -83,6 +90,12 @@ gof.table(lm1, caption = "My caption!")
 
 ```{r, fig.height=8, fig.width=12}
 posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+```
+
+### Interpret
+
+```{r}
+interpret(model = lm1, name = Tr, cutoff = 0)
 ```
 
 

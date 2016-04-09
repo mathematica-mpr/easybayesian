@@ -1,5 +1,6 @@
 #' @title lm stan clustered
 #' @export
+#' @import scales
 
 posteriorplot <- function(model, parameter, cutoff=0, credibleIntervalWidth=0.95){
   arguments <- as.list(match.call())

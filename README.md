@@ -64,14 +64,14 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.52<sup style="vertical-align: 0px;">\*</sup>
+0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.50; 0.54\]
+\[0.48; 0.52\]
 </td>
 </tr>
 <tr>
@@ -79,14 +79,14 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.75<sup style="vertical-align: 0px;">\*</sup>
+0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.73; 0.77\]
+\[0.74; 0.78\]
 </td>
 </tr>
 <tr>
@@ -94,14 +94,14 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.47<sup style="vertical-align: 0px;">\*</sup>
+0.63<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.32; 0.63\]
+\[0.48; 0.78\]
 </td>
 </tr>
 <tr>
@@ -109,14 +109,14 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
--0.20
+-0.05
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.43; 0.04\]
+\[-0.27; 0.18\]
 </td>
 </tr>
 <tr>
@@ -156,23 +156,23 @@ gof.table(lm1, caption = "My caption!")
 <tbody>
 <tr class="odd">
 <td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>0.9999</p></td>
-<td align="left"><p>3506</p></td>
+<td align="left"><p>0.9997</p></td>
+<td align="left"><p>3178</p></td>
 </tr>
 <tr class="even">
 <td align="left"><pre><code>**x2**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>3237</p></td>
+<td align="left"><p>0.9999</p></td>
+<td align="left"><p>3247</p></td>
 </tr>
 <tr class="odd">
 <td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>3322</p></td>
+<td align="left"><p>0.9994</p></td>
+<td align="left"><p>3124</p></td>
 </tr>
 <tr class="even">
 <td align="left"><p><strong>Constant</strong></p></td>
 <td align="left"><p>1</p></td>
-<td align="left"><p>2894</p></td>
+<td align="left"><p>3229</p></td>
 </tr>
 </tbody>
 </table>
@@ -184,6 +184,17 @@ posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
 ```
 
 ![](README-unnamed-chunk-6-1.png)<!-- -->
+
+### Interpret
+
+``` r
+interpret(model = lm1, name = Tr, cutoff = 0)
+#> [[1]]
+#> [1] "There is a 95% probability that the true impact of the intervention is between 0.48 and 0.78 units."
+#> 
+#> [[2]]
+#> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
+```
 
 Clustered
 ---------
@@ -213,14 +224,14 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.52<sup style="vertical-align: 0px;">\*</sup>
+0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.50; 0.54\]
+\[0.48; 0.52\]
 </td>
 </tr>
 <tr>
@@ -228,14 +239,14 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.75<sup style="vertical-align: 0px;">\*</sup>
+0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.73; 0.77\]
+\[0.74; 0.78\]
 </td>
 </tr>
 <tr>
@@ -243,14 +254,14 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.48<sup style="vertical-align: 0px;">\*</sup>
+0.63<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.30; 0.65\]
+\[0.48; 0.79\]
 </td>
 </tr>
 <tr>
@@ -258,14 +269,14 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
--0.20
+-0.05
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.44; 0.05\]
+\[-0.27; 0.18\]
 </td>
 </tr>
 <tr>
@@ -313,7 +324,7 @@ gof.table(lm1, caption = "My caption!")
 <tbody>
 <tr class="odd">
 <td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>1</p></td>
+<td align="left"><p>0.9995</p></td>
 <td align="left"><p>4000</p></td>
 </tr>
 <tr class="even">
@@ -323,13 +334,13 @@ gof.table(lm1, caption = "My caption!")
 </tr>
 <tr class="odd">
 <td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>0.9999</p></td>
-<td align="left"><p>3056</p></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>4000</p></td>
 </tr>
 <tr class="even">
 <td align="left"><p><strong>Constant</strong></p></td>
-<td align="left"><p>0.9995</p></td>
-<td align="left"><p>3086</p></td>
+<td align="left"><p>0.9998</p></td>
+<td align="left"><p>4000</p></td>
 </tr>
 </tbody>
 </table>
@@ -340,7 +351,18 @@ gof.table(lm1, caption = "My caption!")
 posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
 ```
 
-![](README-unnamed-chunk-10-1.png)<!-- -->
+![](README-unnamed-chunk-11-1.png)<!-- -->
+
+### Interpret
+
+``` r
+interpret(model = lm1, name = Tr, cutoff = 0)
+#> [[1]]
+#> [1] "There is a 95% probability that the true impact of the intervention is between 0.48 and 0.79 units."
+#> 
+#> [[2]]
+#> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
+```
 
 How do I get it?
 ================

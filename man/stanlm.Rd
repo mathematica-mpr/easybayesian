@@ -4,6 +4,6 @@
 \alias{stanlm}
 \title{STAN linear model}
 \usage{
-stanlm(formula, cluster = NULL, data, conf = 0.95)
+stanlm(formula, cluster = NULL, data, credible = 0.95)
 }
 

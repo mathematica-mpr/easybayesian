@@ -4,7 +4,7 @@
 #' @importFrom texreg createTexreg
 #' @import rstan
 
-stanlm <- function(formula, cluster=NULL, data, conf = .95){
+stanlm <- function(formula, cluster=NULL, data, credible = .95){
   arguments <- as.list(match.call())
   clustered <- !is.null(arguments$cluster)
   if(clustered){
@@ -70,14 +70,14 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
     t() %>% as.data.frame()
   names(betas) <- c("coef", "SD")
 
-  ci <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], conf))))
+  ci <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(ci) <- c("lb", "ub")
   betas <- bind_cols(betas, ci)
 
   alpha <- data.frame(coef = mean(posteriorSamplesAlpha),
                       SD = sd(posteriorSamplesAlpha))
 
-  ci <- credibleInterval(posteriorSamplesAlpha, conf)
+  ci <- credibleInterval(posteriorSamplesAlpha, credible)
   ci <- data.frame(lb = ci[[1]], ub = ci[[2]])
   alpha <- bind_cols(alpha, ci)
 
@@ -115,6 +115,7 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                                       posteriorSamplesAlpha = posteriorSamplesAlpha),
-                 fit = fit)
+                 fit = fit,
+                 credible = credible)
   return(output)
 }

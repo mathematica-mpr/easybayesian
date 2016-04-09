@@ -4,6 +4,6 @@
 \alias{updateci}
 \title{Update Credible Interval}
 \usage{
-updateci(model, conf)
+updateci(model, credible)
 }
 

@@ -1,14 +1,14 @@
 #' @title Update Credible Interval
 #' @export
 #' @importClassesFrom rstan stanfit
-updateci <- function(model, conf){
+updateci <- function(model, credible){
   fit <-  model$fit
   K <- length(lm1$tbl@coef.names) - 1
   posteriorSamplesBeta <-model$posteriorSamples$posteriorSamplesBeta
-  cibetas <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], conf))))
+  cibetas <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(cibetas) <- c("lb", "ub")
   posteriorSamplesAlpha <- model$posteriorSamples$posteriorSamplesAlpha
-  cialpha <- credibleInterval(posteriorSamplesAlpha, conf)
+  cialpha <- credibleInterval(posteriorSamplesAlpha, credible)
   cialpha <- data.frame(lb = cialpha[[1]], ub = cialpha[[2]])
   ci <- bind_rows(cibetas, cialpha)
   rownames(ci) <- model$tbl@coef.names
