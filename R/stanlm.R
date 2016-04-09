@@ -23,7 +23,7 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
   if(clustered){
     df1 <- data[, c(outcome, covariates, cluster)] %>%
       filter(complete.cases(.))
-    df1[,cluster] <- as.numeric(df1[,cluster]) # MARIEL, is this OKAY?
+    df1[,cluster] <- as.numeric(df1[,cluster])
   }else{
     df1 <- data[, c(outcome, covariates)] %>%
       filter(complete.cases(.))
@@ -38,10 +38,10 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
   if(clustered){
     data2 <- list(N = nrow(df1Rescaled),
                   K = K,
-                  J = length(unique(df1$dnum)),
+                  J = length(unique(df1[,cluster])),
                   y = df1Rescaled[,outcome],
                   x = df1Rescaled[,covariates],
-                  cluster = as.numeric(factor(df1Rescaled$dnum)))
+                  cluster = as.numeric(factor(df1Rescaled[,cluster])))
     # compile the model and run the sampler
     fit <- stan('clustered.stan', data=data2, cores=min(parallel::detectCores(), 4), seed = 9782)
 
@@ -53,6 +53,8 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
     # compile the model and run the sampler
     fit <- stan('unclustered.stan', data=data2, cores=min(parallel::detectCores(), 4), seed = 9782)
   }
+
+  if(length(fit@model_pars) == 0) stop('Something went wrong and the fit object is empty :(')
 
   posteriorSamplesBeta <- t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX)
 

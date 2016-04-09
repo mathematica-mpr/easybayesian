@@ -64,14 +64,14 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.50<sup style="vertical-align: 0px;">\*</sup>
+0.52<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.48; 0.52\]
+\[0.50; 0.54\]
 </td>
 </tr>
 <tr>
@@ -79,14 +79,14 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.77<sup style="vertical-align: 0px;">\*</sup>
+0.75<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.75; 0.79\]
+\[0.73; 0.77\]
 </td>
 </tr>
 <tr>
@@ -94,14 +94,14 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.56<sup style="vertical-align: 0px;">\*</sup>
+0.47<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.41; 0.72\]
+\[0.32; 0.63\]
 </td>
 </tr>
 <tr>
@@ -109,14 +109,14 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
--0.16
+-0.20
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.39; 0.08\]
+\[-0.43; 0.04\]
 </td>
 </tr>
 <tr>
@@ -156,23 +156,23 @@ gof.table(lm1, caption = "My caption!")
 <tbody>
 <tr class="odd">
 <td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>3091</p></td>
+<td align="left"><p>0.9999</p></td>
+<td align="left"><p>3506</p></td>
 </tr>
 <tr class="even">
 <td align="left"><pre><code>**x2**</code></pre></td>
 <td align="left"><p>1</p></td>
-<td align="left"><p>3333</p></td>
+<td align="left"><p>3237</p></td>
 </tr>
 <tr class="odd">
 <td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>0.9996</p></td>
-<td align="left"><p>3270</p></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>3322</p></td>
 </tr>
 <tr class="even">
 <td align="left"><p><strong>Constant</strong></p></td>
 <td align="left"><p>1</p></td>
-<td align="left"><p>3315</p></td>
+<td align="left"><p>2894</p></td>
 </tr>
 </tbody>
 </table>
@@ -188,11 +188,159 @@ posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
 Clustered
 ---------
 
-Not working yet
+``` r
+lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
+```
+
+### Regression table
 
 ``` r
-# lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
+regtbl(lm1, type = "html", caption = "")
 ```
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<table cellspacing="0" align="center" style="border: none;">
+<tr>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b></b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Model 1</b>
+</th>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+x1
+</td>
+<td style="padding-right: 12px; border: none;">
+0.52<sup style="vertical-align: 0px;">\*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[0.50; 0.54\]
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+x2
+</td>
+<td style="padding-right: 12px; border: none;">
+0.75<sup style="vertical-align: 0px;">\*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[0.73; 0.77\]
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Tr
+</td>
+<td style="padding-right: 12px; border: none;">
+0.48<sup style="vertical-align: 0px;">\*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[0.30; 0.65\]
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+Constant
+</td>
+<td style="padding-right: 12px; border: none;">
+-0.20
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[-0.44; 0.05\]
+</td>
+</tr>
+<tr>
+<td style="border-top: 1px solid black;">
+N
+</td>
+<td style="border-top: 1px solid black;">
+1000
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+Clusters
+</td>
+<td style="border-bottom: 2px solid black;">
+26
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="3">
+<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
+</td>
+</tr>
+</table>
+### Goodness of fit
+
+``` r
+gof.table(lm1, caption = "My caption!")
+```
+
+<table style="width:50%;">
+<caption>My caption!</caption>
+<colgroup>
+<col width="23%" />
+<col width="12%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"> </th>
+<th align="left">Rhat</th>
+<th align="left">n_eff</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><pre><code>**x1**</code></pre></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>4000</p></td>
+</tr>
+<tr class="even">
+<td align="left"><pre><code>**x2**</code></pre></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>4000</p></td>
+</tr>
+<tr class="odd">
+<td align="left"><pre><code>**Tr**</code></pre></td>
+<td align="left"><p>0.9999</p></td>
+<td align="left"><p>3056</p></td>
+</tr>
+<tr class="even">
+<td align="left"><p><strong>Constant</strong></p></td>
+<td align="left"><p>0.9995</p></td>
+<td align="left"><p>3086</p></td>
+</tr>
+</tbody>
+</table>
+
+### Plot
+
+``` r
+posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+```
+
+![](README-unnamed-chunk-10-1.png)<!-- -->
 
 How do I get it?
 ================

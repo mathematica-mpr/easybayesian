@@ -63,11 +63,28 @@ posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
 
 ## Clustered
 
-Not working yet
-
 ```{r}
-# lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
+lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
 ```
+
+### Regression table
+
+```{r results='asis'}
+regtbl(lm1, type = "html", caption = "")
+```
+
+### Goodness of fit
+```{r results='asis'}
+gof.table(lm1, caption = "My caption!")
+
+```
+
+### Plot
+
+```{r, fig.height=8, fig.width=12}
+posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+```
+
 
 # How do I get it?
 
