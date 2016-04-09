@@ -10,3 +10,6 @@ Description: This package makes runing a linear regression using STAN easy.
 License: MIT
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
