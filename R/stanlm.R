@@ -23,6 +23,7 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
   if(clustered){
     df1 <- data[, c(outcome, covariates, cluster)] %>%
       filter(complete.cases(.))
+    df1[,cluster] <- as.numeric(df1[,cluster]) # MARIEL, is this OKAY?
   }else{
     df1 <- data[, c(outcome, covariates)] %>%
       filter(complete.cases(.))
