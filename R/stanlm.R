@@ -101,7 +101,7 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
       se = coef$SD,
       ci.low = coef$lb,
       ci.up = coef$ub,
-      model.name = "Clustered Stan",
+      model.name = "Unclustered Stan",
       gof.names = c("N"),
       gof = c(nrow(df1)),
       gof.decimal = c(FALSE)
@@ -113,4 +113,5 @@ stanlm <- function(formula, cluster=NULL, data, conf = .95){
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                                       posteriorSamplesAlpha = posteriorSamplesAlpha),
                  fit = fit)
+  return(output)
 }
