@@ -2,6 +2,7 @@
 #' @export
 #' @importClassesFrom rstan stanfit
 updateci <- function(model, conf){
+  fit <-  model$fit
   K <- length(lm1$tbl@coef.names) - 1
   posteriorSamplesBeta <-model$posteriorSamples$posteriorSamplesBeta
   cibetas <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], conf))))
@@ -41,7 +42,8 @@ updateci <- function(model, conf){
   }
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
-                                         posteriorSamplesAlpha = posteriorSamplesAlpha))
+                                         posteriorSamplesAlpha = posteriorSamplesAlpha),
+                 fit = fit)
   return(output)
 
 }
