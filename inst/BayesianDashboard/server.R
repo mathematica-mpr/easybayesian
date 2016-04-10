@@ -13,7 +13,7 @@ shinyServer(function(input, output) {
     if (!is.null(dfile))
       read_csv(dfile)
   })
-  
+
   #Outcome Var
   output$OutcomeVars <- renderUI({
     selectizeInput(
@@ -25,7 +25,7 @@ shinyServer(function(input, output) {
       options = list(placeholder = "Select the outcome variable")
     )
   })
-  
+
   #Treatment Var
   output$TrtVars <- renderUI({
     selectizeInput(
@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
       options = list(placeholder = "Select the treatment variable")
     )
   })
-  
+
   #Control Vars
   output$Controls <- renderUI({
     selectizeInput(
@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
       options = list(placeholder = "Select control variables")
     )
   })
-  
+
   #Clustering Var
   output$ClusterVar <- renderUI({
     selectizeInput(
@@ -71,7 +71,7 @@ shinyServer(function(input, output) {
     else {
       myformula <- paste0(input$outcome_var, " ~ ", input$trt_var)
     }
-    
+
     withProgress(message = 'Runnig Baysian Model', detail = "reading data", value = 0, {
       df1 <- as.data.frame(data())
       incProgress(0.1, detail = "be patient")
@@ -80,15 +80,15 @@ shinyServer(function(input, output) {
       }else{
         lm1 <- stanlm(formula = as.formula(myformula), cluster = input$cluster_var, data = df1)
       }
-      
-      
+
+
       incProgress(0.75, detail = "almost there")
       results[[as.character(length(names(results)) + 1)]] <- lm1
       setProgress(1)
     })
-    
+
   }) #<-end observeEvent
-  
+
   lmupdated <- reactive({
     if (input$go == 0)
       return()
@@ -97,17 +97,17 @@ shinyServer(function(input, output) {
     lm <- lista[[length(lista)]]
     updatedlm <- updateci(lm, credible = input$credible / 100)
   })
-  
+
   output$regtable <- renderUI({
     if (input$go == 0)
       return()
     else
       lm <- lmupdated()
       HTML(
-        regtbl(lm, type="html")
+        regtbl(lm, type="html", star = "&#42")
       )
   })
-  
+
     output$plot <- renderPlot({
       if (input$go == 0)
         return()
@@ -117,11 +117,11 @@ shinyServer(function(input, output) {
       #parameter <- as.character(input$trt_var)
       posteriorplot(model = lm, parameter = input$trt_var , # input$trt_var, Treatment works
                     cutoff = input$cutoff, credibleIntervalWidth = input$credible / 100)
-     
-    })
-  
 
-   
+    })
+
+
+
     output$interpretation <- renderUI({
       if (input$go == 0)
         return()
@@ -131,7 +131,7 @@ shinyServer(function(input, output) {
       interpretation <-
         interpret(model = lm,
                   name = input$trt_var,
-                  cutoff = input$cutoff, 
+                  cutoff = input$cutoff,
                   credible = input$credible / 100)
       text <- paste0("<ul><li>",
                      interpretation[[1]],
@@ -141,7 +141,7 @@ shinyServer(function(input, output) {
       text <-  text[[length(text)]]
       HTML(text)
     })
-    
+
     output$gof <- renderUI({
       if (input$go == 0)
         return()
@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
       lm <- lista[[length(lista)]]
       HTML(gof.table(lm, type="html"))
     })
-    
+
     observe({
       shinyjs::toggleState("go",!is.null(input$trt_var) && input$trt_var != "")
     })

@@ -145,47 +145,69 @@ N
 ### Goodness of fit
 
 ``` r
-gof.table(lm1, caption = "My caption!")
+gof.table(lm1, caption = "My caption!", type="html")
 ```
 
-<table style="width:50%;">
-<caption>My caption!</caption>
-<colgroup>
-<col width="23%" />
-<col width="12%" />
-<col width="13%" />
-</colgroup>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
-<tr class="header">
-<th align="left"> </th>
-<th align="left">Rhat</th>
-<th align="left">n_eff</th>
+<tr>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey;">
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Rhat
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+n\_eff
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>1.001</p></td>
-<td align="left"><p>2859</p></td>
+<tr>
+<td style="text-align: left;">
+x1
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+2859.37
+</td>
 </tr>
-<tr class="even">
-<td align="left"><pre><code>**x2**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>2987</p></td>
+<tr>
+<td style="text-align: left;">
+x2
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+2987.19
+</td>
 </tr>
-<tr class="odd">
-<td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>2960</p></td>
+<tr>
+<td style="text-align: left;">
+Tr
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+2959.87
+</td>
 </tr>
-<tr class="even">
-<td align="left"><p><strong>Constant</strong></p></td>
-<td align="left"><p>0.9997</p></td>
-<td align="left"><p>3057</p></td>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+Constant
+</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+1.00
+</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+3056.66
+</td>
 </tr>
 </tbody>
 </table>
-
 ### Plot
 
 ``` r
@@ -313,47 +335,69 @@ Clusters
 ### Goodness of fit
 
 ``` r
-gof.table(lm1, caption = "My caption!")
+gof.table(lm1, caption = "My caption!", type="html")
 ```
 
-<table style="width:50%;">
-<caption>My caption!</caption>
-<colgroup>
-<col width="23%" />
-<col width="12%" />
-<col width="13%" />
-</colgroup>
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
-<tr class="header">
-<th align="left"> </th>
-<th align="left">Rhat</th>
-<th align="left">n_eff</th>
+<tr>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey;">
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Rhat
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+n\_eff
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>0.9999</p></td>
-<td align="left"><p>4000</p></td>
+<tr>
+<td style="text-align: left;">
+x1
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+4000.00
+</td>
 </tr>
-<tr class="even">
-<td align="left"><pre><code>**x2**</code></pre></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>4000</p></td>
+<tr>
+<td style="text-align: left;">
+x2
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+4000.00
+</td>
 </tr>
-<tr class="odd">
-<td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>0.9999</p></td>
-<td align="left"><p>4000</p></td>
+<tr>
+<td style="text-align: left;">
+Tr
+</td>
+<td style="text-align: center;">
+1.00
+</td>
+<td style="text-align: center;">
+4000.00
+</td>
 </tr>
-<tr class="even">
-<td align="left"><p><strong>Constant</strong></p></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>4000</p></td>
+<tr>
+<td style="border-bottom: 2px solid grey; text-align: left;">
+Constant
+</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+1.00
+</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+4000.00
+</td>
 </tr>
 </tbody>
 </table>
-
 ### Plot
 
 ``` r

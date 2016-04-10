@@ -52,7 +52,7 @@ regtbl(lm1, type = "html", caption = "")
 
 ### Goodness of fit
 ```{r results='asis'}
-gof.table(lm1, caption = "My caption!")
+gof.table(lm1, caption = "My caption!", type="html")
 
 ```
 
@@ -83,7 +83,7 @@ regtbl(lm1, type = "html", caption = "")
 
 ### Goodness of fit
 ```{r results='asis'}
-gof.table(lm1, caption = "My caption!")
+gof.table(lm1, caption = "My caption!", type="html")
 
 ```
 
