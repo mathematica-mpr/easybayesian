@@ -1,7 +1,7 @@
-Package: lmstan
+Package: easybayesian
 Type: Package
 Title: Bayesian Linear Model
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: as.person(c(
     "Mariel Finucane <marielfinucane@gmail.com> [aut]",
     "Ignacio Martinez <ignacio@protonmail.ch> [aut, cre]"

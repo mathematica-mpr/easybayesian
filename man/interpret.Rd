@@ -4,6 +4,6 @@
 \alias{interpret}
 \title{Interpret lm stan}
 \usage{
-interpret(model, name, cutoff)
+interpret(model, name, cutoff, credible = 0.95)
 }
 

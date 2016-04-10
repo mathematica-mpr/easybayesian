@@ -11,6 +11,7 @@ Create some fake data:
 ----------------------
 
 ``` r
+set.seed(9782)
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
@@ -33,7 +34,7 @@ Run stan lm
 -----------
 
 ``` r
-library(lmstan)
+library(easybayesian)
 library(rstan)
 #> Loading required package: ggplot2
 #> rstan (Version 2.9.0-3, packaged: 2016-02-11 15:54:41 UTC, GitRev: 05c3d0058b6a)
@@ -86,7 +87,7 @@ x2
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.74; 0.78\]
+\[0.73; 0.78\]
 </td>
 </tr>
 <tr>
@@ -94,14 +95,14 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.63<sup style="vertical-align: 0px;">\*</sup>
+0.59<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.48; 0.78\]
+\[0.43; 0.76\]
 </td>
 </tr>
 <tr>
@@ -109,14 +110,14 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
--0.05
+-0.11
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.27; 0.18\]
+\[-0.34; 0.12\]
 </td>
 </tr>
 <tr>
@@ -156,23 +157,23 @@ gof.table(lm1, caption = "My caption!")
 <tbody>
 <tr class="odd">
 <td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>0.9997</p></td>
-<td align="left"><p>3178</p></td>
+<td align="left"><p>1.001</p></td>
+<td align="left"><p>2859</p></td>
 </tr>
 <tr class="even">
 <td align="left"><pre><code>**x2**</code></pre></td>
-<td align="left"><p>0.9999</p></td>
-<td align="left"><p>3247</p></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>2987</p></td>
 </tr>
 <tr class="odd">
 <td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>0.9994</p></td>
-<td align="left"><p>3124</p></td>
+<td align="left"><p>1</p></td>
+<td align="left"><p>2960</p></td>
 </tr>
 <tr class="even">
 <td align="left"><p><strong>Constant</strong></p></td>
-<td align="left"><p>1</p></td>
-<td align="left"><p>3229</p></td>
+<td align="left"><p>0.9997</p></td>
+<td align="left"><p>3057</p></td>
 </tr>
 </tbody>
 </table>
@@ -180,17 +181,17 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ``` r
-posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
 ```
 
-![](README-unnamed-chunk-6-1.png)<!-- -->
+![](README-unnamed-chunk-6-1.png)<!-- -->![](README-unnamed-chunk-6-2.png)<!-- -->
 
 ### Interpret
 
 ``` r
-interpret(model = lm1, name = Tr, cutoff = 0)
+interpret(model = lm1, name = "Tr", cutoff = 0)
 #> [[1]]
-#> [1] "There is a 95% probability that the true impact of the intervention is between 0.48 and 0.78 units."
+#> [1] "There is a 95% probability that the true impact of the intervention is between 0.43 and 0.76 units."
 #> 
 #> [[2]]
 #> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
@@ -246,7 +247,7 @@ x2
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.74; 0.78\]
+\[0.73; 0.78\]
 </td>
 </tr>
 <tr>
@@ -254,14 +255,14 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.63<sup style="vertical-align: 0px;">\*</sup>
+0.60<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.48; 0.79\]
+\[0.42; 0.76\]
 </td>
 </tr>
 <tr>
@@ -269,14 +270,14 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
--0.05
+-0.11
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.27; 0.18\]
+\[-0.34; 0.13\]
 </td>
 </tr>
 <tr>
@@ -324,7 +325,7 @@ gof.table(lm1, caption = "My caption!")
 <tbody>
 <tr class="odd">
 <td align="left"><pre><code>**x1**</code></pre></td>
-<td align="left"><p>0.9995</p></td>
+<td align="left"><p>0.9999</p></td>
 <td align="left"><p>4000</p></td>
 </tr>
 <tr class="even">
@@ -334,12 +335,12 @@ gof.table(lm1, caption = "My caption!")
 </tr>
 <tr class="odd">
 <td align="left"><pre><code>**Tr**</code></pre></td>
-<td align="left"><p>1</p></td>
+<td align="left"><p>0.9999</p></td>
 <td align="left"><p>4000</p></td>
 </tr>
 <tr class="even">
 <td align="left"><p><strong>Constant</strong></p></td>
-<td align="left"><p>0.9998</p></td>
+<td align="left"><p>1</p></td>
 <td align="left"><p>4000</p></td>
 </tr>
 </tbody>
@@ -348,17 +349,17 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ``` r
-posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
 ```
 
-![](README-unnamed-chunk-11-1.png)<!-- -->
+![](README-unnamed-chunk-11-1.png)<!-- -->![](README-unnamed-chunk-11-2.png)<!-- -->
 
 ### Interpret
 
 ``` r
-interpret(model = lm1, name = Tr, cutoff = 0)
+interpret(model = lm1, name = "Tr", cutoff = 0)
 #> [[1]]
-#> [1] "There is a 95% probability that the true impact of the intervention is between 0.48 and 0.79 units."
+#> [1] "There is a 95% probability that the true impact of the intervention is between 0.42 and 0.76 units."
 #> 
 #> [[2]]
 #> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
@@ -369,4 +370,4 @@ How do I get it?
 
 For now, this package is not public. But if you are here, I probably want to share it with you.
 
-To install the package you can run `devtools::install_github(repo = 'ignacio82/lmstan', auth_token = '40748ac7538e4b47244a58cf9b1479d48e7bd531')`
+To install the package you can run `devtools::install_github(repo = 'ignacio82/easybayesian', auth_token = '40748ac7538e4b47244a58cf9b1479d48e7bd531')`

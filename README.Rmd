@@ -23,6 +23,7 @@ This package makes using STAN easy!
 ## Create some fake data:
 
 ```{r}
+set.seed(9782)
 library(dplyr)
 N <- 1000
 df1 <- data.frame(
@@ -37,7 +38,7 @@ df1 <- data.frame(
 ## Run stan lm
 
 ```{r}
-library(lmstan)
+library(easybayesian)
 library(rstan)
 lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, data = df1)
 
@@ -58,13 +59,13 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ```{r, fig.height=8, fig.width=12}
-posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
 ```
 
 ### Interpret
 
 ```{r}
-interpret(model = lm1, name = Tr, cutoff = 0)
+interpret(model = lm1, name = "Tr", cutoff = 0)
 ```
 
 
@@ -89,13 +90,13 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ```{r, fig.height=8, fig.width=12}
-posteriorplot(model = lm1, parameter = Tr, cutoff = 0.4)
+posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
 ```
 
 ### Interpret
 
 ```{r}
-interpret(model = lm1, name = Tr, cutoff = 0)
+interpret(model = lm1, name = "Tr", cutoff = 0)
 ```
 
 
@@ -103,4 +104,4 @@ interpret(model = lm1, name = Tr, cutoff = 0)
 
 For now, this package is not public. But if you are here, I probably want to share it with you.
 
-To install the package you can run `devtools::install_github(repo = 'ignacio82/lmstan', auth_token = '40748ac7538e4b47244a58cf9b1479d48e7bd531')`
+To install the package you can run `devtools::install_github(repo = 'ignacio82/easybayesian', auth_token = '40748ac7538e4b47244a58cf9b1479d48e7bd531')`

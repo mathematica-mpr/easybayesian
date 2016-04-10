@@ -2,8 +2,10 @@
 #' @export
 #' @importClassesFrom rstan stanfit
 updateci <- function(model, credible){
+  old_credible <- model$credible
+  if(model$credible == credible) return(model)
   fit <-  model$fit
-  K <- length(lm1$tbl@coef.names) - 1
+  K <- length(model$tbl@coef.names) - 1
   posteriorSamplesBeta <-model$posteriorSamples$posteriorSamplesBeta
   cibetas <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(cibetas) <- c("lb", "ub")
@@ -43,7 +45,8 @@ updateci <- function(model, credible){
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                          posteriorSamplesAlpha = posteriorSamplesAlpha),
-                 fit = fit)
+                 fit = fit,
+                 credible = credible)
   return(output)
 
 }

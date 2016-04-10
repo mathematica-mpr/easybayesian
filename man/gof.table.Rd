@@ -4,6 +4,6 @@
 \alias{gof.table}
 \title{Goodness of fit}
 \usage{
-gof.table(model, caption = "")
+gof.table(model, caption = "", type = "grid", digits = 2)
 }
 

@@ -3,10 +3,11 @@
 #' @import scales
 
 posteriorplot <- function(model, parameter, cutoff=0, credibleIntervalWidth=0.95){
-  arguments <- as.list(match.call())
+  # arguments <- as.list(match.call())
   posteriorSamples <- model$posteriorSamples$posteriorSamplesBeta
-  p.name <- as.character(arguments$parameter)
-  whichParameter <- which(names(posteriorSamples)==p.name)
+  # p.name <- as.character(arguments$parameter)
+  # whichParameter <- which(names(posteriorSamples)==p.name)
+  whichParameter <- which(names(posteriorSamples)==parameter)
   posteriorDraws <- posteriorSamples[,whichParameter] # Input
   pointEstimate <- colMeans(posteriorSamples)
   posteriorProbability <- apply(posteriorSamples, 2, function(x) return(mean(x>cutoff)))
@@ -32,5 +33,9 @@ posteriorplot <- function(model, parameter, cutoff=0, credibleIntervalWidth=0.95
     theme_mpr() +
     theme(axis.ticks = element_blank(), axis.text.y = element_blank()) +
     xlab("Impact") + ylab("")
+  r <- print(p)
+
+  p <- p +
+    coord_cartesian(ylim = c(r$panel$ranges[[1]]$y.range[1]*1.05, r$panel$ranges[[1]]$y.range[2]))
   return(p)
 }

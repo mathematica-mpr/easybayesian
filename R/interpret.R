@@ -2,9 +2,11 @@
 #' @export
 #' @import scales
 
-interpret <- function(model, name, cutoff){
-  arguments <- as.list(match.call())
-  whichParameter <- which(model$tbl@coef.names==arguments$name)
+interpret <- function(model, name, cutoff, credible=.95){
+  # arguments <- as.list(match.call())
+  # whichParameter <- which(model$tbl@coef.names==arguments$name)
+  model <- updateci(model, credible)
+  whichParameter <- which(model$tbl@coef.names==name)
   point <- model$tbl@coef[[whichParameter]]
   lb <- round(model$tbl@ci.low[[whichParameter]],2)
   ub <-  round(model$tbl@ci.up[[whichParameter]],2)
