@@ -59,7 +59,7 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ```{r, fig.height=8, fig.width=12}
-posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
+p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleIntervalWidth = .95)
 ```
 
 ### Interpret
@@ -90,7 +90,7 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ```{r, fig.height=8, fig.width=12}
-posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
+p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleIntervalWidth = .95)
 ```
 
 ### Interpret

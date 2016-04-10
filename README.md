@@ -181,10 +181,10 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ``` r
-posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
+p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleIntervalWidth = .95)
 ```
 
-![](README-unnamed-chunk-6-1.png)<!-- -->![](README-unnamed-chunk-6-2.png)<!-- -->
+![](README-unnamed-chunk-6-1.png)<!-- -->
 
 ### Interpret
 
@@ -349,10 +349,10 @@ gof.table(lm1, caption = "My caption!")
 ### Plot
 
 ``` r
-posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4)
+p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleIntervalWidth = .95)
 ```
 
-![](README-unnamed-chunk-11-1.png)<!-- -->![](README-unnamed-chunk-11-2.png)<!-- -->
+![](README-unnamed-chunk-11-1.png)<!-- -->
 
 ### Interpret
 
