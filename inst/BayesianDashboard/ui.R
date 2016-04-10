@@ -28,7 +28,7 @@ sidebar <- dashboardSidebar(
   width = 250,
   fileInput(
     "chosenfile",
-    label = h3("File input"),
+    label = h4("File input"),
     accept = ".csv"
   ),
   uiOutput("OutcomeVars"),
@@ -37,13 +37,13 @@ sidebar <- dashboardSidebar(
   uiOutput("ClusterVar"),
   numericInput(
     "cutoff",
-    label = h3("Cutoff:"),
+    label = h4("Cutoff:"),
     value = 0,
     step = 0.01
   ),
   sliderInput(
     "credible",
-    h3("Credible Interval:"),
+    h4("Credible Interval:"),
     min = 50,
     max = 99,
     value = 75,
@@ -63,7 +63,7 @@ body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
     width = 6,
     uiOutput("regtable")
   ),
-  
+
   box(
     title = "Goodness of Fit",
     status = "warning",
@@ -80,13 +80,13 @@ fluidRow(
     width = 6,
     plotOutput("plot")
   ),
-  
+
   box(
     title = "Interpretation",
     status = "primary",
     solidHeader = TRUE,
     width = 6,
-    h3(uiOutput("interpretation"))
+    h4(uiOutput("interpretation"))
   )
 ))
 
