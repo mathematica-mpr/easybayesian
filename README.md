@@ -73,7 +73,7 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.50<sup style="vertical-align: 0px;">&\#42</sup>
+0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -88,7 +88,7 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.76<sup style="vertical-align: 0px;">&\#42</sup>
+0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -103,7 +103,7 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.59<sup style="vertical-align: 0px;">&\#42</sup>
+0.59<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -138,7 +138,7 @@ N
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">&\#42 0 outside the credible interval.</span>
+<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
 </td>
 </tr>
 </table>
@@ -255,7 +255,7 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.50<sup style="vertical-align: 0px;">&\#42</sup>
+0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -270,7 +270,7 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.76<sup style="vertical-align: 0px;">&\#42</sup>
+0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -285,7 +285,7 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.60<sup style="vertical-align: 0px;">&\#42</sup>
+0.60<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
@@ -328,7 +328,7 @@ Clusters
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">&\#42 0 outside the credible interval.</span>
+<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
 </td>
 </tr>
 </table>

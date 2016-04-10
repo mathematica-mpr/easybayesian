@@ -108,8 +108,6 @@ bayesiandashboard()
 ![Bayesian Dashboard](dashboard.png)
 
 
-
-
 # How do I get it?
 
 For now, this package is not public. But if you are here, I probably want to share it with you.
