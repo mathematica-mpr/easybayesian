@@ -1,0 +1,93 @@
+library(shiny)
+library(shinydashboard)
+library(shinyjs)
+
+# Header
+header <-
+  dashboardHeader(title = "Bayesian dashboard",
+                  dropdownMenu(
+                    type = "messages",
+                    messageItem(from = "Ignacio",
+                                message = "You can write something here."),
+                    messageItem(
+                      from = "New User",
+                      message = "How do I register?",
+                      icon = icon("question"),
+                      time = "13:45"
+                    ),
+                    messageItem(
+                      from = "Support",
+                      message = "The new server is ready.",
+                      icon = icon("life-ring"),
+                      time = "2014-12-01"
+                    )
+                  ))
+
+# Sidebar
+sidebar <- dashboardSidebar(
+  width = 250,
+  fileInput(
+    "chosenfile",
+    label = h3("File input"),
+    accept = ".csv"
+  ),
+  uiOutput("OutcomeVars"),
+  uiOutput("TrtVars"),
+  uiOutput("Controls"),
+  uiOutput("ClusterVar"),
+  numericInput(
+    "cutoff",
+    label = h3("Cutoff:"),
+    value = 0,
+    step = 0.01
+  ),
+  sliderInput(
+    "credible",
+    h3("Credible Interval:"),
+    min = 50,
+    max = 99,
+    value = 75,
+    step = 1,
+    post = "%"
+  ),
+  column(3, actionButton(inputId = "go", label = "Run Analysis!"))
+)
+
+# Body
+
+body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
+  box(
+    title = "Regression Table",
+    status = "primary",
+    solidHeader = TRUE,
+    width = 6,
+    uiOutput("regtable")
+  ),
+  
+  box(
+    title = "Goodness of Fit",
+    status = "warning",
+    solidHeader = TRUE,
+    width = 6,
+    uiOutput("gof")
+  )
+)),
+fluidRow(
+  box(
+    title = "Plot",
+    status = "primary",
+    solidHeader = TRUE,
+    width = 6,
+    plotOutput("plot")
+  ),
+  
+  box(
+    title = "Interpretation",
+    status = "primary",
+    solidHeader = TRUE,
+    width = 6,
+    h3(uiOutput("interpretation"))
+  )
+))
+
+shinyUI(dashboardPage(header, sidebar, body, skin = "red"))

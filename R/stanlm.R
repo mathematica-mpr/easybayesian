@@ -5,8 +5,15 @@
 #' @import rstan
 
 stanlm <- function(formula, cluster=NULL, data, credible = .95){
-  arguments <- as.list(match.call())
-  clustered <- !is.null(arguments$cluster)
+  #browser()
+  # arguments <- as.list(match.call())
+  # clustered <- !is.null(arguments$cluster)
+  # if(clustered){
+  #   createClusteredStanfile()
+  # }else{
+  #   createStanfile()
+  # }
+  clustered <- !is.null(cluster)
   if(clustered){
     createClusteredStanfile()
   }else{
@@ -15,7 +22,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
 
   outcome <- as.character(formula)[2]
   covariates <- attr(terms(formula), 'term.labels')
-  if(clustered) cluster <- as.character(arguments$cluster)
+  # if(clustered) cluster <- as.character(arguments$cluster)
 
   ####
   K <- length(covariates)

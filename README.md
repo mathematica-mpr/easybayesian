@@ -35,6 +35,14 @@ Run stan lm
 
 ``` r
 library(easybayesian)
+#> Warning: replacing previous import 'readr::col_numeric' by
+#> 'scales::col_numeric' when loading 'easybayesian'
+#> Warning: replacing previous import 'readr::col_factor' by
+#> 'scales::col_factor' when loading 'easybayesian'
+#> Warning: replacing previous import 'shiny::runExample' by
+#> 'shinyjs::runExample' when loading 'easybayesian'
+#> Warning: replacing previous import 'rstan::show' by 'shinyjs::show' when
+#> loading 'easybayesian'
 library(rstan)
 #> Loading required package: ggplot2
 #> rstan (Version 2.9.0-3, packaged: 2016-02-11 15:54:41 UTC, GitRev: 05c3d0058b6a)
@@ -65,7 +73,7 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.50<sup style="vertical-align: 0px;">\*</sup>
+0.50<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -80,7 +88,7 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.76<sup style="vertical-align: 0px;">\*</sup>
+0.76<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -95,7 +103,7 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.59<sup style="vertical-align: 0px;">\*</sup>
+0.59<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -130,7 +138,7 @@ N
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
+<span style="font-size:0.8em">&\#42 0 outside the credible interval.</span>
 </td>
 </tr>
 </table>
@@ -201,7 +209,7 @@ Clustered
 ---------
 
 ``` r
-lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
+lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = "c", data = df1)
 ```
 
 ### Regression table
@@ -225,7 +233,7 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
-0.50<sup style="vertical-align: 0px;">\*</sup>
+0.50<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -240,7 +248,7 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
-0.76<sup style="vertical-align: 0px;">\*</sup>
+0.76<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -255,7 +263,7 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.60<sup style="vertical-align: 0px;">\*</sup>
+0.60<sup style="vertical-align: 0px;">&\#42</sup>
 </td>
 </tr>
 <tr>
@@ -298,7 +306,7 @@ Clusters
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
+<span style="font-size:0.8em">&\#42 0 outside the credible interval.</span>
 </td>
 </tr>
 </table>
@@ -364,6 +372,13 @@ interpret(model = lm1, name = "Tr", cutoff = 0)
 #> [[2]]
 #> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
 ```
+
+Dashboard
+=========
+
+    bayesiandashboard()
+
+![Bayesian Dashboard](dashboard.png)
 
 How do I get it?
 ================

@@ -4,8 +4,8 @@
 
 regtbl <- function(model, type="text", ...){
   if(type=="text"){
-    screenreg(model$tbl, custom.note = "* 0 outside the credible interval.", ...)
+    screenreg(model$tbl, custom.note = "* outside the credible interval.", ...)
   }else{
-    htmlreg(model$tbl, star.symbol = "\\*",  custom.note = "\\* 0 outside the credible interval.", ...)
+    htmlreg(model$tbl, star.symbol = "&#42",  custom.note = "&#42 0 outside the credible interval.", ...)
   }
 }

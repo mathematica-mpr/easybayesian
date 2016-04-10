@@ -72,7 +72,7 @@ interpret(model = lm1, name = "Tr", cutoff = 0)
 ## Clustered
 
 ```{r}
-lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = c, data = df1)
+lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = "c", data = df1)
 ```
 
 ### Regression table
@@ -98,6 +98,16 @@ p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleInterval
 ```{r}
 interpret(model = lm1, name = "Tr", cutoff = 0)
 ```
+
+# Dashboard
+
+```
+bayesiandashboard()
+```
+
+![Bayesian Dashboard](dashboard.png)
+
+
 
 
 # How do I get it?
