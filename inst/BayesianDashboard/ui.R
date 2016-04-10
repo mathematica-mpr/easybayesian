@@ -24,7 +24,12 @@ header <-
                   ))
 
 # Sidebar
-sidebar <- dashboardSidebar(
+sidebar <- dashboardSidebar(tags$head(
+  tags$style(HTML("
+                      .sidebar { height: 90vh; overflow-y: auto; }
+                      " )
+  )
+),
   width = 250,
   fileInput(
     "chosenfile",
