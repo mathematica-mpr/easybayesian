@@ -13,3 +13,13 @@ RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+Imports: rstan,
+    dplyr,
+    grid,
+    htmlTable,
+    readr,
+    scales,
+    shiny,
+    shinydashboard,
+    shinyjs,
+    texreg
