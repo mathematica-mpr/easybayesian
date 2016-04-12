@@ -38,8 +38,15 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
   #
   meanY <- mean(df1[,outcome])
   sdY <-sd(df1[,outcome])
-  meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
-  sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
+  if(is.null(dim(df1[,covariates]))){
+    meanX <- mean(df1[,covariates])
+    sdX <- sd(df1[,covariates])
+  }else{
+    meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
+    sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
+  }
+
+
   df1Rescaled <- as.data.frame(scale(df1))
   # put data in a list for stan
   if(clustered){
