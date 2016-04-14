@@ -5,7 +5,8 @@
 #' @import rstan
 
 stanlm <- function(formula, cluster=NULL, data, credible = .95){
-  # browser()
+  #browser()
+  data <- as.data.frame(data)
   # arguments <- as.list(match.call())
   # clustered <- !is.null(arguments$cluster)
   # if(clustered){
@@ -30,17 +31,17 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
   if(clustered){
     df1 <- data[, c(outcome, covariates, cluster)] %>%
       filter(complete.cases(.))
-    df1[,cluster] <- as.numeric(df1[,cluster])
+    df1[,cluster] <- as.numeric(as.factor(df1[,cluster]))
   }else{
     df1 <- data[, c(outcome, covariates)] %>%
       filter(complete.cases(.))
   }
   #
-  meanY <- apply(df1[,outcome],2,mean)[[1]]
-  sdY <-apply(df1[,outcome],2,sd)[[1]]
+  meanY <- mean(df1[,outcome])
+  sdY <- sd(df1[,outcome])
   if(is.null(dim(df1[,covariates]))){
-    meanX <- apply(df1[,covariates],2,mean)[[1]] 
-    sdX <- apply(df1[,covariates],2,sd)[[1]] 
+    meanX <- mean(df1[,covariates])  
+    sdX <- sd(df1[,covariates])  
   }else{
     meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
     sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
