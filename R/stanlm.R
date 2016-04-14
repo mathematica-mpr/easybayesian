@@ -5,7 +5,7 @@
 #' @import rstan
 
 stanlm <- function(formula, cluster=NULL, data, credible = .95){
-  #browser()
+  # browser()
   # arguments <- as.list(match.call())
   # clustered <- !is.null(arguments$cluster)
   # if(clustered){
@@ -36,11 +36,11 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
       filter(complete.cases(.))
   }
   #
-  meanY <- mean(df1[,outcome])
-  sdY <-sd(df1[,outcome])
+  meanY <- apply(df1[,outcome],2,mean)[[1]]
+  sdY <-apply(df1[,outcome],2,sd)[[1]]
   if(is.null(dim(df1[,covariates]))){
-    meanX <- mean(df1[,covariates])
-    sdX <- sd(df1[,covariates])
+    meanX <- apply(df1[,covariates],2,mean)[[1]] 
+    sdX <- apply(df1[,covariates],2,sd)[[1]] 
   }else{
     meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
     sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()

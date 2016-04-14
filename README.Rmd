@@ -22,7 +22,7 @@ This package makes using STAN easy!
 
 ## Create some fake data:
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 set.seed(9782)
 library(dplyr)
 N <- 1000
@@ -37,7 +37,7 @@ df1 <- data.frame(
 
 ## Run stan lm
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 library(easybayesian)
 library(rstan)
 lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, data = df1)
