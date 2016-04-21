@@ -57,7 +57,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
                   x = matrix(df1Rescaled[,covariates]),
                   cluster = as.numeric(factor(df1Rescaled[,cluster])))
     # compile the model and run the sampler
-    fit <- stan('clustered.stan', data=data2, cores=min(parallel::detectCores(), 4), seed = 9782)
+    fit <- stan('clustered.stan', data=data2, chains = 4, iter = 2000, thin = 1, cores=min(parallel::detectCores(), 4), seed = 9782)
 
   }else{
     data2 <- list(N = nrow(df1Rescaled),
