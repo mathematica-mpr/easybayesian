@@ -74,7 +74,7 @@ body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
     status = "warning",
     solidHeader = TRUE,
     width = 6,
-    uiOutput("gof")
+    plotOutput("gof", height = "300px")
   )
 )),
 fluidRow(

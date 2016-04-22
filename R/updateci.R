@@ -14,6 +14,8 @@ updateci <- function(model, credible){
   cialpha <- data.frame(lb = cialpha[[1]], ub = cialpha[[2]])
   ci <- bind_rows(cibetas, cialpha)
   rownames(ci) <- model$tbl@coef.names
+  custom.columns = model$custom.columns
+  traceplots = model$traceplots
 
   if(model$tbl@model.name == "Clustered Stan"){
     model <- createTexreg(
@@ -46,7 +48,9 @@ updateci <- function(model, credible){
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                          posteriorSamplesAlpha = posteriorSamplesAlpha),
                  fit = fit,
-                 credible = credible)
+                 credible = credible,
+                 custom.columns = custom.columns,
+                 traceplots = traceplots)
   return(output)
 
 }

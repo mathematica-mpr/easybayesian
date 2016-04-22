@@ -122,15 +122,17 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
   }
   posteriorSamplesBeta <- as.data.frame(posteriorSamplesBeta)
   names(posteriorSamplesBeta) <- covariates
-  Rhat <- round(summary(fit)$summary[,"Rhat"][c(2:(K+1),1)],4)
+  Rhat <- sprintf("%.2f", round(summary(fit)$summary[,"Rhat"][c(2:(K+1),1)],2))
   n_eff <- round(summary(fit)$summary[,"n_eff"][c(2:(K+1),1)],0)
   custom.columns <- list(Rhat=Rhat, n_eff=n_eff)
+  traceplots <- traceplot(fit, pars = c(names(fit)[1:(K+1)], "sigma", "lp__"))
   
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                                       posteriorSamplesAlpha = posteriorSamplesAlpha),
                  fit = fit,
                  credible = credible,
-                 custom.columns = custom.columns)
+                 custom.columns = custom.columns,
+                 traceplots = traceplots)
   return(output)
 }

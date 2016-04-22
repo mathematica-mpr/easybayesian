@@ -102,9 +102,17 @@ shinyServer(function(input, output, session) {
     if (input$go == 0)
       return()
     else
+      star <- "&#42"
       lm <- lmupdated()
+    mynote <- paste0(star, " outside the ", scales::percent(lm$credible), " credible interval.<br>",
+                     "Rhat is the potential scale reduction factor on split chains (at convergence, Rhat=1).<br>",
+                     "n_{eff} is a crude measure of effective sample size.<br>",
+                     "The log posterior quantifies the combined posterior density of all model parameters.")
       HTML(
-        regtbl(lm, type="html", star = "&#42")
+        texreg::htmlreg(lm$tbl, star.symbol = star,
+                        custom.note = mynote,
+                        custom.columns = lm$custom.columns,
+                        caption = "")
       )
   })
 
@@ -145,13 +153,13 @@ shinyServer(function(input, output, session) {
       HTML(text)
     })
 
-    output$gof <- renderUI({
+    output$gof <- renderPlot({
       if (input$go == 0)
         return()
       else
         lista <- reactiveValuesToList(results)
       lm <- lista[[length(lista)]]
-      HTML(gof.table(lm, type="html"))
+      lm$traceplots
     })
 
     observe({
