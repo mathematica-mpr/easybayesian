@@ -83,7 +83,7 @@ fluidRow(
     status = "primary",
     solidHeader = TRUE,
     width = 6,
-    plotOutput("plot")
+    plotOutput("plot", click = "plot_click")
   ),
 
   box(

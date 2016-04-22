@@ -4,7 +4,7 @@ library(rstan)
 library(easybayesian)
 library(readr)
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   results <- reactiveValues()
   #Load the chosen dataset
   data <- reactive({
@@ -119,8 +119,11 @@ shinyServer(function(input, output) {
                     cutoff = input$cutoff, credibleIntervalWidth = input$credible / 100)
 
     })
-
-
+    
+    observeEvent(input$plot_click,{
+      updateNumericInput(session, "cutoff", 
+                         value = round(input$plot_click$x,2))
+    })
 
     output$interpretation <- renderUI({
       if (input$go == 0)
