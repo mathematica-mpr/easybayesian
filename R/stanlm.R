@@ -7,13 +7,6 @@
 stanlm <- function(formula, cluster=NULL, data, credible = .95){
   #browser()
   data <- as.data.frame(data)
-  # arguments <- as.list(match.call())
-  # clustered <- !is.null(arguments$cluster)
-  # if(clustered){
-  #   createClusteredStanfile()
-  # }else{
-  #   createStanfile()
-  # }
   clustered <- !is.null(cluster)
   if(clustered){
     createClusteredStanfile()
@@ -97,6 +90,8 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
 
   coef <- bind_rows(betas, alpha)
   rownames(coef) <- c(covariates, "Constant")
+  
+  lp <- summary(fit)$summary[,"Rhat"]["lp__"]
 
   if(clustered){
     model <- createTexreg(
@@ -106,10 +101,11 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
       ci.low = coef$lb,
       ci.up = coef$ub,
       model.name = "Clustered Stan",
-      gof.names = c("N", "Clusters "),
+      gof.names = c("N", "Clusters ", "Log posterior"),
       gof = c(nrow(df1),
-              length(unique(df1[,cluster]))),
-      gof.decimal = c(FALSE, FALSE)
+              length(unique(df1[,cluster])),
+              lp),
+      gof.decimal = c(FALSE, FALSE, TRUE)
     )
   }else{
     model <- createTexreg(
@@ -119,17 +115,22 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
       ci.low = coef$lb,
       ci.up = coef$ub,
       model.name = "Unclustered Stan",
-      gof.names = c("N"),
-      gof = c(nrow(df1)),
-      gof.decimal = c(FALSE)
+      gof.names = c("N", "Log posterior"),
+      gof = c(nrow(df1), lp),
+      gof.decimal = c(FALSE, TRUE)
     )
   }
   posteriorSamplesBeta <- as.data.frame(posteriorSamplesBeta)
   names(posteriorSamplesBeta) <- covariates
+  Rhat <- round(summary(fit)$summary[,"Rhat"][c(2:(K+1),1)],4)
+  n_eff <- round(summary(fit)$summary[,"n_eff"][c(2:(K+1),1)],0)
+  custom.columns <- list(Rhat=Rhat, n_eff=n_eff)
+  
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                                       posteriorSamplesAlpha = posteriorSamplesAlpha),
                  fit = fit,
-                 credible = credible)
+                 credible = credible,
+                 custom.columns = custom.columns)
   return(output)
 }
