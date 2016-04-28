@@ -2,9 +2,7 @@
 #' @export
 #' @import scales
 
-interpret <- function(model, name, cutoff, credible=.95){
-  # arguments <- as.list(match.call())
-  # whichParameter <- which(model$tbl@coef.names==arguments$name)
+interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   model <- updateci(model, credible)
   whichParameter <- which(model$tbl@coef.names==name)
   point <- model$tbl@coef[[whichParameter]]
@@ -12,7 +10,9 @@ interpret <- function(model, name, cutoff, credible=.95){
   ub <-  round(model$tbl@ci.up[[whichParameter]],2)
   posteriorSamples <- model$posteriorSamples$posteriorSamplesBeta
   posteriorProbability <- apply(posteriorSamples, 2, function(x) return(mean(x>cutoff)))
+  posteriorProbabilitylessthan <- apply(posteriorSamples, 2, function(x) return(mean(x<cutoff)))
   prob <- scales::percent(posteriorProbability[whichParameter])
+  one_minus_prob <- scales::percent(posteriorProbabilitylessthan[whichParameter])
   credible <- scales::percent(model$credible)
   text1 <- paste0(
     "There is a ",
@@ -31,7 +31,19 @@ interpret <- function(model, name, cutoff, credible=.95){
     cutoff,
     " units or more."
   )
-  texts <- list(text1, text2)
+  
+  text3 <- paste0(
+    "There is a ",
+    one_minus_prob,
+    " probability that the intervention decreases the outcome by ",
+    cutoff,
+    " units or more."
+  )
+  if(lessthan){
+    texts <- list(text1, text3)
+  }else {
+    texts <- list(text1, text2)
+  }
 
   return(texts)
 }

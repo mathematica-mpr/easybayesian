@@ -13,14 +13,6 @@ Create some fake data:
 ``` r
 set.seed(9782)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 N <- 1000
 df1 <- data.frame(
   x1 = rnorm(n = N, mean = 10, sd = 3),
@@ -35,20 +27,7 @@ Run stan lm
 
 ``` r
 library(easybayesian)
-#> Warning: replacing previous import 'readr::col_numeric' by
-#> 'scales::col_numeric' when loading 'easybayesian'
-#> Warning: replacing previous import 'readr::col_factor' by
-#> 'scales::col_factor' when loading 'easybayesian'
-#> Warning: replacing previous import 'shiny::runExample' by
-#> 'shinyjs::runExample' when loading 'easybayesian'
-#> Warning: replacing previous import 'rstan::show' by 'shinyjs::show' when
-#> loading 'easybayesian'
 library(rstan)
-#> Loading required package: ggplot2
-#> rstan (Version 2.9.0-3, packaged: 2016-02-11 15:54:41 UTC, GitRev: 05c3d0058b6a)
-#> For execution on a local, multicore CPU with excess RAM we recommend calling
-#> rstan_options(auto_write = TRUE)
-#> options(mc.cores = parallel::detectCores())
 lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, data = df1)
 ```
 
@@ -65,6 +44,12 @@ regtbl(lm1, type = "html", caption = "")
 <b></b>
 </th>
 <th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Rhat</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>n\_eff</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
 <b>Model 1</b>
 </th>
 </tr>
@@ -73,10 +58,20 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+2866
+</td>
+<td style="padding-right: 12px; border: none;">
 0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
@@ -88,10 +83,20 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+2957
+</td>
+<td style="padding-right: 12px; border: none;">
 0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
@@ -103,6 +108,12 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+2930
+</td>
+<td style="padding-right: 12px; border: none;">
 0.59<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
@@ -110,12 +121,22 @@ Tr
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[0.43; 0.76\]
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[0.43; 0.75\]
 </td>
 </tr>
 <tr>
 <td style="padding-right: 12px; border: none;">
 Constant
+</td>
+<td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+2914
 </td>
 <td style="padding-right: 12px; border: none;">
 -0.11
@@ -125,7 +146,11 @@ Constant
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.34; 0.12\]
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[-0.34; 0.13\]
 </td>
 </tr>
 <tr>
@@ -133,12 +158,40 @@ Constant
 N
 </td>
 <td style="border-top: 1px solid black;">
+</td>
+<td style="border-top: 1px solid black;">
+</td>
+<td style="border-top: 1px solid black;">
 1000
 </td>
 </tr>
 <tr>
-<td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
+<td style="padding-right: 12px; border: none;">
+R&\#770 log-posterior
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+1.00
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+N<sub>eff</sub> log-posterior
+</td>
+<td style="border-bottom: 2px solid black;">
+</td>
+<td style="border-bottom: 2px solid black;">
+</td>
+<td style="border-bottom: 2px solid black;">
+1519
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="5">
+<span style="font-size:0.8em">\* outside the 95% credible interval.<br>Rhat is the potential scale reduction factor on split chains (at convergence, Rhat=1).<br>n\_{eff} is a crude measure of effective sample size.<br>The log posterior quantifies the combined posterior density of all model parameters.</span>
 </td>
 </tr>
 </table>
@@ -170,7 +223,7 @@ x1
 1.00
 </td>
 <td style="text-align: center;">
-2859.37
+2866.37
 </td>
 </tr>
 <tr>
@@ -181,7 +234,7 @@ x2
 1.00
 </td>
 <td style="text-align: center;">
-2987.19
+2957.42
 </td>
 </tr>
 <tr>
@@ -192,7 +245,7 @@ Tr
 1.00
 </td>
 <td style="text-align: center;">
-2959.87
+2929.98
 </td>
 </tr>
 <tr>
@@ -203,7 +256,7 @@ Constant
 1.00
 </td>
 <td style="border-bottom: 2px solid grey; text-align: center;">
-3056.66
+2914.08
 </td>
 </tr>
 </tbody>
@@ -221,7 +274,7 @@ p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, credibleInterval
 ``` r
 interpret(model = lm1, name = "Tr", cutoff = 0)
 #> [[1]]
-#> [1] "There is a 95% probability that the true impact of the intervention is between 0.43 and 0.76 units."
+#> [1] "There is a 95% probability that the true impact of the intervention is between 0.43 and 0.75 units."
 #> 
 #> [[2]]
 #> [1] "There is a 100% probability that the intervention increases the outcome by 0 units or more."
@@ -247,6 +300,12 @@ regtbl(lm1, type = "html", caption = "")
 <b></b>
 </th>
 <th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>Rhat</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
+<b>n\_eff</b>
+</th>
+<th style="text-align: left; border-top: 2px solid black; border-bottom: 1px solid black; padding-right: 12px;">
 <b>Model 1</b>
 </th>
 </tr>
@@ -255,10 +314,20 @@ regtbl(lm1, type = "html", caption = "")
 x1
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+4000
+</td>
+<td style="padding-right: 12px; border: none;">
 0.50<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
@@ -270,10 +339,20 @@ x1
 x2
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+4000
+</td>
+<td style="padding-right: 12px; border: none;">
 0.76<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
@@ -285,10 +364,20 @@ x2
 Tr
 </td>
 <td style="padding-right: 12px; border: none;">
-0.60<sup style="vertical-align: 0px;">\*</sup>
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+3159
+</td>
+<td style="padding-right: 12px; border: none;">
+0.59<sup style="vertical-align: 0px;">\*</sup>
 </td>
 </tr>
 <tr>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
@@ -300,6 +389,12 @@ Tr
 Constant
 </td>
 <td style="padding-right: 12px; border: none;">
+1.00
+</td>
+<td style="padding-right: 12px; border: none;">
+4000
+</td>
+<td style="padding-right: 12px; border: none;">
 -0.11
 </td>
 </tr>
@@ -307,7 +402,11 @@ Constant
 <td style="padding-right: 12px; border: none;">
 </td>
 <td style="padding-right: 12px; border: none;">
-\[-0.34; 0.13\]
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+\[-0.35; 0.13\]
 </td>
 </tr>
 <tr>
@@ -315,20 +414,52 @@ Constant
 N
 </td>
 <td style="border-top: 1px solid black;">
+</td>
+<td style="border-top: 1px solid black;">
+</td>
+<td style="border-top: 1px solid black;">
 1000
 </td>
 </tr>
 <tr>
-<td style="border-bottom: 2px solid black;">
+<td style="padding-right: 12px; border: none;">
 Clusters
 </td>
-<td style="border-bottom: 2px solid black;">
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
 26
 </td>
 </tr>
 <tr>
-<td style="padding-right: 12px; border: none;" colspan="3">
-<span style="font-size:0.8em">\* 0 outside the credible interval.</span>
+<td style="padding-right: 12px; border: none;">
+R&\#770 log-posterior
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+</td>
+<td style="padding-right: 12px; border: none;">
+1.00
+</td>
+</tr>
+<tr>
+<td style="border-bottom: 2px solid black;">
+N<sub>eff</sub> log-posterior
+</td>
+<td style="border-bottom: 2px solid black;">
+</td>
+<td style="border-bottom: 2px solid black;">
+</td>
+<td style="border-bottom: 2px solid black;">
+1302
+</td>
+</tr>
+<tr>
+<td style="padding-right: 12px; border: none;" colspan="5">
+<span style="font-size:0.8em">\* outside the 95% credible interval.<br>Rhat is the potential scale reduction factor on split chains (at convergence, Rhat=1).<br>n\_{eff} is a crude measure of effective sample size.<br>The log posterior quantifies the combined posterior density of all model parameters.</span>
 </td>
 </tr>
 </table>
@@ -382,7 +513,7 @@ Tr
 1.00
 </td>
 <td style="text-align: center;">
-4000.00
+3158.52
 </td>
 </tr>
 <tr>

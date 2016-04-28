@@ -83,7 +83,8 @@ fluidRow(
     status = "primary",
     solidHeader = TRUE,
     width = 6,
-    plotOutput("plot", click = "plot_click")
+    checkboxInput("lessthan", "less than", value = FALSE, width = NULL),
+    plotOutput("plot", click = "plot_click", height = "350px")
   ),
 
   box(

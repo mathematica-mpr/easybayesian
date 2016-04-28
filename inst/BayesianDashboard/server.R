@@ -127,8 +127,10 @@ shinyServer(function(input, output, session) {
       lista <- reactiveValuesToList(results)
       lm <- lista[[length(lista)]]
       #parameter <- as.character(input$trt_var)
-      posteriorplot(model = lm, parameter = input$trt_var , # input$trt_var, Treatment works
-                    cutoff = input$cutoff, credibleIntervalWidth = input$credible / 100)
+      p <- posteriorplot(model = lm, parameter = input$trt_var , # input$trt_var, Treatment works
+                    cutoff = input$cutoff, credibleIntervalWidth = input$credible / 100,
+                    lessthan = input$lessthan)
+      return(p)
 
     })
     
@@ -147,7 +149,8 @@ shinyServer(function(input, output, session) {
         interpret(model = lm,
                   name = input$trt_var,
                   cutoff = input$cutoff,
-                  credible = input$credible / 100)
+                  credible = input$credible / 100,
+                  lessthan = input$lessthan)
       text <- paste0("<ul><li>",
                      interpretation[[1]],
                      "</li><li>",

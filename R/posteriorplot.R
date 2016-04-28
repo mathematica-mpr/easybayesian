@@ -2,19 +2,24 @@
 #' @export
 #' @import scales
 
-posteriorplot <- function(model, parameter, cutoff=0, credibleIntervalWidth=0.95){
-  # arguments <- as.list(match.call())
+posteriorplot <- function(model, parameter, cutoff=0, 
+                          credibleIntervalWidth=0.95, lessthan=FALSE){
   posteriorSamples <- model$posteriorSamples$posteriorSamplesBeta
-  # p.name <- as.character(arguments$parameter)
-  # whichParameter <- which(names(posteriorSamples)==p.name)
   whichParameter <- which(names(posteriorSamples)==parameter)
   posteriorDraws <- posteriorSamples[,whichParameter] # Input
   pointEstimate <- colMeans(posteriorSamples)
-  posteriorProbability <- apply(posteriorSamples, 2, function(x) return(mean(x>cutoff)))
-  prob <- scales::percent(posteriorProbability[whichParameter])
+  
   df.plot <- data.frame(density = posteriorDraws)
-  mid <- cutoff + (max(df.plot$density) - cutoff) / 2
-  ds <- density(df.plot$density, from = cutoff, to = max(df.plot$density))
+  if(lessthan){
+    posteriorProbability <- apply(posteriorSamples, 2, function(x) return(mean(x<cutoff)))
+    mid <- cutoff/2
+    ds <- density(df.plot$density, from = min(df.plot$density), to = cutoff)
+  }else{
+    posteriorProbability <- apply(posteriorSamples, 2, function(x) return(mean(x>cutoff)))
+    mid <- cutoff + (max(df.plot$density) - cutoff) / 2
+    ds <- density(df.plot$density, from = cutoff, to = max(df.plot$density))
+  }
+  prob <- scales::percent(posteriorProbability[whichParameter])
   ds_data <- data.frame(x = ds$x, y = ds$y)
   credibleInterval <- apply(posteriorSamples, 2, quantile,
                             c((1 - credibleIntervalWidth) / 2,
@@ -34,8 +39,7 @@ posteriorplot <- function(model, parameter, cutoff=0, credibleIntervalWidth=0.95
     theme(axis.ticks = element_blank(), axis.text.y = element_blank()) +
     xlab("Impact") + ylab("")
   r <- (print(p))
-
+  
   p <- p +
     coord_cartesian(ylim = c(r$panel$ranges[[1]]$y.range[1]*1.05, r$panel$ranges[[1]]$y.range[2]))
-  return(p)
 }
