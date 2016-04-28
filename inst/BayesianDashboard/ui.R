@@ -48,7 +48,7 @@ sidebar <- dashboardSidebar(tags$head(
   ),
   sliderInput(
     "credible",
-    h4("Credible Interval:"),
+    h4("Credible Interval Width:"),
     min = 50,
     max = 99,
     value = 75,
@@ -70,7 +70,7 @@ body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
   ),
 
   box(
-    title = "Goodness of Fit",
+    title = "MCMC Traceplots",
     status = "warning",
     solidHeader = TRUE,
     width = 6,
@@ -79,7 +79,7 @@ body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
 )),
 fluidRow(
   box(
-    title = "Plot",
+    title = "Posterior Distribution of the Treatment Effect",
     status = "primary",
     solidHeader = TRUE,
     width = 6,

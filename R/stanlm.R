@@ -91,7 +91,14 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
   coef <- bind_rows(betas, alpha)
   rownames(coef) <- c(covariates, "Constant")
   
-  lp <- summary(fit)$summary[,"Rhat"]["lp__"]
+  log_posterior_n_Rhat <- summary(fit)$summary[,"Rhat"]["lp__"]
+  log_posterior_n_eff <- summary(fit)$summary[,"n_eff"]["lp__"]
+  
+  Rhat <- "R&#770"
+  n_eff <- paste0("N","<sub>eff</sub>")
+  R_lp <- paste0(Rhat, " log-posterior")
+  N_lp <- paste0(n_eff, " log-posterior")
+  
 
   if(clustered){
     model <- createTexreg(
@@ -101,11 +108,13 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
       ci.low = coef$lb,
       ci.up = coef$ub,
       model.name = "Clustered Stan",
-      gof.names = c("N", "Clusters ", "Log posterior"),
+      gof.names = c("N", "Clusters ", 
+                    R_lp, N_lp),
       gof = c(nrow(df1),
               length(unique(df1[,cluster])),
-              lp),
-      gof.decimal = c(FALSE, FALSE, TRUE)
+              log_posterior_n_Rhat,
+              log_posterior_n_eff),
+      gof.decimal = c(FALSE, FALSE, TRUE, FALSE)
     )
   }else{
     model <- createTexreg(
@@ -115,9 +124,9 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
       ci.low = coef$lb,
       ci.up = coef$ub,
       model.name = "Unclustered Stan",
-      gof.names = c("N", "Log posterior"),
-      gof = c(nrow(df1), lp),
-      gof.decimal = c(FALSE, TRUE)
+      gof.names = c("N", R_lp, N_lp),
+      gof = c(nrow(df1), log_posterior_n_Rhat, log_posterior_n_eff),
+      gof.decimal = c(FALSE, TRUE, FALSE)
     )
   }
   posteriorSamplesBeta <- as.data.frame(posteriorSamplesBeta)

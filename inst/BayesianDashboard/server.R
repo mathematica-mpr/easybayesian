@@ -80,8 +80,6 @@ shinyServer(function(input, output, session) {
       }else{
         lm1 <- stanlm(formula = as.formula(myformula), cluster = input$cluster_var, data = df1)
       }
-
-
       incProgress(0.75, detail = "almost there")
       results[[as.character(length(names(results)) + 1)]] <- lm1
       setProgress(1)
@@ -104,15 +102,21 @@ shinyServer(function(input, output, session) {
     else
       star <- "&#42"
       lm <- lmupdated()
-    mynote <- paste0(star, " outside the ", scales::percent(lm$credible), " credible interval.<br>",
-                     "Rhat is the potential scale reduction factor on split chains (at convergence, Rhat=1).<br>",
-                     "n_{eff} is a crude measure of effective sample size.<br>",
-                     "The log posterior quantifies the combined posterior density of all model parameters.")
+    mynote <- paste0(star, " 0 outside the ", scales::percent(lm$credible), " credible interval.<br>",
+                     "The log posterior quantifies the combined posterior density of all model parameters.<br>",
+                     "R&#770 is the potential scale reduction factor on split chains (at convergence, R&#770 = 1).<br>",
+                     "N<sub>eff<//sub> is a crude measure of effective sample size."
+                     )
+    model.name <- paste0("Point Estimate<br>",
+                         "[", scales::percent(lm$credible), " CI]")
+    custom.columns <- list("R&#770"=lm$custom.columns$Rhat, 
+                           "N<sub>eff<//sub>"=lm$custom.columns$n_eff)
       HTML(
         texreg::htmlreg(lm$tbl, star.symbol = star,
                         custom.note = mynote,
-                        custom.columns = lm$custom.columns,
-                        caption = "")
+                        custom.columns = custom.columns,
+                        caption = "",
+                        custom.model.names = model.name)
       )
   })
 
