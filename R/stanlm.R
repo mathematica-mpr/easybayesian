@@ -99,14 +99,23 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
   posteriorSamplesAlpha <- extract(fit, pars='alpha')[[1]] * sdY -
     rowSums(t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX*meanX)) +
     meanY
+  
+  if(K==1){
+    betas <- posteriorSamplesBeta %>% as.data.frame() %>%
+      summarise_each(funs(mean, sd)) %>%
+      as.data.frame()
+    names(betas) <- c("coef", "SD")
+  }else{
+    betas <- posteriorSamplesBeta %>% as.data.frame() %>%
+      summarise_each(funs(mean, sd)) %>%
+      tidyr::gather(variable, value) %>%
+      tidyr::separate(variable, c("var", "stat"), sep = "\\_") %>%
+      tidyr::spread(var, value) %>% select(-stat) %>%
+      t() %>% as.data.frame()
+    names(betas) <- c("coef", "SD")
+  }
 
-  betas <- posteriorSamplesBeta %>% as.data.frame() %>%
-    summarise_each(funs(mean, sd)) %>%
-    tidyr::gather(variable, value) %>%
-    tidyr::separate(variable, c("var", "stat"), sep = "\\_") %>%
-    tidyr::spread(var, value) %>% select(-stat) %>%
-    t() %>% as.data.frame()
-  names(betas) <- c("coef", "SD")
+  
 
   ci <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(ci) <- c("lb", "ub")
