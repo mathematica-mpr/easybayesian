@@ -1,0 +1,67 @@
+---
+title: "easybayesian::stanlm()"
+author: "Ignacio"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{easybayesian::stanlm()}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-", 
+  message=FALSE, 
+  warning=FALSE
+)
+```
+# Why should I use it?  
+  
+`easybayesian::stanlm()` makes running a linear bayesian model easy.
+
+# How do I use it?
+
+## Create some fake data
+
+```{r, message=FALSE, warning=FALSE}
+set.seed(9782)
+library(dplyr)
+N <- 1000
+df1 <- data.frame(
+  x1 = rnorm(n = N, mean = 10, sd = 3),
+  x2 = runif(n = N, min = 0, max = 10),
+  c = sample(LETTERS, size = N, replace = T)
+) %>% mutate(Tr = ifelse(c %in% c("A","E","I","O","U"), yes = 1, no = 0)) %>%
+  mutate(y = 0.5*x1 + 0.75*x2 + 0.5*Tr + rnorm(N,0,1))
+
+```
+
+## Run `stanlm`
+
+```{r, message=FALSE, warning=FALSE}
+library(easybayesian)
+library(rstan)
+lm1 <- stanlm(formula = y ~ x1 + x2 + Tr, data = df1)
+```
+
+## Regression table
+
+```{r results='asis'}
+regtbl(lm1, type = "html", caption = "")
+```
+
+## Plot
+
+```{r, fig.height=7, fig.width=7}
+p <- posteriorplot(model = lm1, parameter = "Tr", cutoff = 0.4, 
+                   credibleIntervalWidth = .95, lessthan = FALSE)
+```
+
+## Interpret
+
+```{r}
+interpret(model = lm1, name = "Tr", cutoff = 0.5)
+```

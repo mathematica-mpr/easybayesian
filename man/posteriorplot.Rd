@@ -4,6 +4,7 @@
 \alias{posteriorplot}
 \title{lm stan clustered}
 \usage{
-posteriorplot(model, parameter, cutoff = 0, credibleIntervalWidth = 0.95)
+posteriorplot(model, parameter, cutoff = 0, credibleIntervalWidth = 0.95,
+  lessthan = FALSE)
 }
 

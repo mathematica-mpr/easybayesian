@@ -22,4 +22,5 @@ Imports: rstan,
     shiny,
     shinydashboard,
     shinyjs,
-    texreg
+    texreg,
+    pander

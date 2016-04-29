@@ -6,4 +6,47 @@
 \usage{
 stanlm(formula, cluster = NULL, data, credible = 0.95)
 }
+\arguments{
+\item{formula}{a symbolic description of the model to be fitted}
+
+\item{cluster}{an optional parameter that indicates the cluster variable}
+
+\item{data}{a data frame containing the variables in the model}
+
+\item{credible}{an optinal parameter to indicate the width of the credible interval}
+}
+\value{
+a list containing 6 objects: 
+\code{tbl} the regression table, 
+\code{posteriorSamples} a list containing the posterior samples for beta and alpha, 
+\code{fit} the output from \code{\link[rstan]{stan}}, 
+\code{credible} the credible interval for the parameters, 
+\code{custom.columns}, and 
+\code{traceplots}
+}
+\section{Vignette}{
+
+For more details check \code{vignette("stanlm", package = "easybayesian")}
+}
+\examples{
+set.seed(9782)
+library(dplyr)
+N <- 1000
+df1 <- data.frame(
+  x1 = rnorm(n = N, mean = 10, sd = 3),
+  x2 = runif(n = N, min = 0, max = 10),
+  c = sample(LETTERS, size = N, replace = T)) \%>\% 
+  mutate(Tr = ifelse(c \%in\% c("A","E","I","O","U"),
+                     yes = 1, no = 0)) \%>\%
+  mutate(y = 0.5*x1 + 0.75*x2 + 0.5*Tr + rnorm(N,0,1))
+fit1 <- stanlm(formula = y ~ x1 + x2 + Tr, cluster = "c", data = df1)
+regtbl(fit1, type = "html")
+posteriorplot(model = fit1, parameter = "Tr", cutoff = 0.4)
+}
+\seealso{
+\code{\link{regtbl}} for regression table, 
+\code{\link{posteriorplot}} for plotting the posterior distribution,
+\code{\link{interpret}} for interpreting the results,
+\code{\link{bayesiandashboard}} \code{\link{shiny}} dashboard.
+}
 

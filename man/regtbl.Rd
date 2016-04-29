@@ -4,6 +4,6 @@
 \alias{regtbl}
 \title{STAN linear model Regression Table}
 \usage{
-regtbl(model, type = "text", ...)
+regtbl(model, type = "text", star = "\\\\*", ...)
 }
 

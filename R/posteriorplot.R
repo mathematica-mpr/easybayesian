@@ -38,7 +38,7 @@ posteriorplot <- function(model, parameter, cutoff=0,
     theme_mpr() +
     theme(axis.ticks = element_blank(), axis.text.y = element_blank()) +
     xlab("Impact") + ylab("")
-  r <- (print(p))
+  r <- invisible(print(p))
   
   p <- p +
     coord_cartesian(ylim = c(r$panel$ranges[[1]]$y.range[1]*1.05, r$panel$ranges[[1]]$y.range[2]))
