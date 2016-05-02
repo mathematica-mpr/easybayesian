@@ -4,19 +4,26 @@
 \alias{stanlm}
 \title{STAN linear model}
 \usage{
-stanlm(formula, cluster = NULL, data, credible = 0.95)
+stanlm(formula, cluster = NULL, data, credible = 0.95, chains = 4,
+  iter = 2000, thin = 1)
 }
 \arguments{
-\item{formula}{a symbolic description of the model to be fitted}
+\item{formula}{A symbolic description of the model to be fitted.}
 
-\item{cluster}{an optional parameter that indicates the cluster variable}
+\item{cluster}{An optional parameter that indicates the cluster variable.}
 
-\item{data}{a data frame containing the variables in the model}
+\item{data}{A data frame containing the variables in the model.}
 
-\item{credible}{an optinal parameter to indicate the width of the credible interval}
+\item{credible}{An optinal parameter to indicate the width of the credible interval.}
+
+\item{chains}{A positive integer specifying number of chains; defaults to 4.}
+
+\item{iter}{A positive integer specifying how many iterations for each chain (including warmup). The default is 2000.}
+
+\item{thin}{A positive integer specifying the period for saving sample; defaults to 1.}
 }
 \value{
-a list containing 6 objects: 
+A list containing 6 objects: 
 \code{tbl} the regression table, 
 \code{posteriorSamples} a list containing the posterior samples for beta and alpha, 
 \code{fit} the output from \code{\link[rstan]{stan}}, 

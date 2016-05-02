@@ -3,11 +3,14 @@
 #' @import dplyr
 #' @importFrom texreg createTexreg
 #' @import rstan
-#' @param formula a symbolic description of the model to be fitted
-#' @param cluster an optional parameter that indicates the cluster variable
-#' @param data a data frame containing the variables in the model
-#' @param credible an optinal parameter to indicate the width of the credible interval
-#' @return a list containing 6 objects: 
+#' @param formula A symbolic description of the model to be fitted.
+#' @param cluster An optional parameter that indicates the cluster variable.
+#' @param data A data frame containing the variables in the model.
+#' @param credible An optinal parameter to indicate the width of the credible interval.
+#' @param chains A positive integer specifying number of chains; defaults to 4.
+#' @param iter A positive integer specifying how many iterations for each chain (including warmup). The default is 2000.
+#' @param thin A positive integer specifying the period for saving sample; defaults to 1.
+#' @return A list containing 6 objects: 
 #' \code{tbl} the regression table, 
 #' \code{posteriorSamples} a list containing the posterior samples for beta and alpha, 
 #' \code{fit} the output from \code{\link[rstan]{stan}}, 
@@ -35,7 +38,8 @@
 #' @section Vignette:
 #' For more details check \code{vignette("stanlm", package = "easybayesian")}
 
-stanlm <- function(formula, cluster=NULL, data, credible = .95){
+stanlm <- function(formula, cluster=NULL, data, credible = .95, 
+                   chains = 4, iter = 2000, thin = 1){
   #browser()
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
@@ -81,7 +85,9 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
                   x = as.matrix(df1Rescaled[,covariates]),
                   cluster = as.numeric(factor(df1Rescaled[,cluster])))
     # compile the model and run the sampler
-    fit <- stan('clustered.stan', data=data2, chains = 4, iter = 2000, thin = 1, cores=min(parallel::detectCores(), 4), seed = 9782)
+    fit <- stan('clustered.stan', data=data2, 
+                chains = chains, iter = iter, thin = thin, 
+                cores=min(parallel::detectCores(), 4), seed = 9782)
 
   }else{
     data2 <- list(N = nrow(df1Rescaled),
@@ -89,7 +95,9 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95){
                   y = df1Rescaled[,outcome],
                   x = as.matrix(df1Rescaled[,covariates]))
     # compile the model and run the sampler
-    fit <- stan('unclustered.stan', data=data2, cores=min(parallel::detectCores(), 4), seed = 9782)
+    fit <- stan('unclustered.stan', data=data2,
+                chains = chains, iter = iter, thin = thin,
+                cores=min(parallel::detectCores(), 4), seed = 9782)
   }
 
   if(length(fit@model_pars) == 0) stop('Something went wrong and the fit object is empty :(')
