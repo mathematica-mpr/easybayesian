@@ -1,8 +1,6 @@
 library(shiny)
-library(shinyjs)
 library(rstan)
 library(easybayesian)
-library(readr)
 
 shinyServer(function(input, output, session) {
   results <- reactiveValues()
@@ -11,7 +9,7 @@ shinyServer(function(input, output, session) {
     dfile <-
       input$chosenfile[1, 4] #<-filename with path is the [1,4] cell in obj
     if (!is.null(dfile))
-      read_csv(dfile)
+      readr::read_csv(dfile)
   })
 
   #Outcome Var

@@ -1,6 +1,5 @@
 library(shiny)
 library(shinydashboard)
-library(shinyjs)
 
 # Header
 header <-
@@ -60,7 +59,7 @@ sidebar <- dashboardSidebar(tags$head(
 
 # Body
 
-body <- dashboardBody(fluidPage(fluidRow(useShinyjs(),
+body <- dashboardBody(fluidPage(fluidRow(shinyjs::useShinyjs(),
   box(
     title = "Regression Table",
     status = "primary",
