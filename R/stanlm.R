@@ -75,7 +75,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
   }
 
-  df1Rescaled <- as.data.frame(scale(df1))
+  df1Rescaled <- scale(df1) ### CHANGED FROM as.data.frame(scale(df1))
   # put data in a list for stan
   if(clustered){
     data2 <- list(N = nrow(df1Rescaled),
@@ -83,7 +83,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
                   J = length(unique(df1[,cluster])),
                   y = df1Rescaled[,outcome],
                   x = as.matrix(df1Rescaled[,covariates]),
-                  cluster = as.numeric(factor(df1Rescaled[,cluster])))
+                  cluster = factor(df1Rescaled[,cluster])) ### CHANGED FROM as.numeric(factor(df1Rescaled[,cluster])))
     # compile the model and run the sampler
     fit <- stan('clustered.stan', data=data2, 
                 chains = chains, iter = iter, thin = thin, 
@@ -93,14 +93,14 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     data2 <- list(N = nrow(df1Rescaled),
                   K = K,
                   y = df1Rescaled[,outcome],
-                  x = as.matrix(df1Rescaled[,covariates]))
+                  x = as.matrix(df1Rescaled[,covariates))
     # compile the model and run the sampler
     fit <- stan('unclustered.stan', data=data2,
                 chains = chains, iter = iter, thin = thin,
                 cores=min(parallel::detectCores(), 4), seed = 9782)
   }
 
-  if(length(fit@model_pars) == 0) stop('Something went wrong and the fit object is empty :(')
+  if(length(fit@model_pars) == 0) stop('No outcome and/or predictor variables were found :(') ### CHANGED FROM Something went wrong and the fit object is empty :(
 
   posteriorSamplesBeta <- t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX)
 

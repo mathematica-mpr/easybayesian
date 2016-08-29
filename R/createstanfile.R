@@ -19,7 +19,7 @@ createStanfile <- function(){
   model {
     real yHat[N];
     for(i in 1:N){
-      yHat[i] <- alpha + dot_product(x[i], beta);
+      yHat[i] = alpha + dot_product(x[i], beta); // CHANGED FROM <- 
     }
     y ~ normal(yHat, sigma); // likelihood
   }

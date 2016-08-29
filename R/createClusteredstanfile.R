@@ -22,13 +22,13 @@ createClusteredStanfile <- function(){
 
     transformed parameters{
     vector[J] b;
-    b <- b_raw * tau;
+    b = b_raw * tau; \\ CHANGED FROM <- 
     }
 
     model {
     real yHat[N];
     for(i in 1:N){
-    yHat[i] <- alpha + dot_product(x[i], beta) + b[cluster[i]];
+    yHat[i] = alpha + dot_product(x[i], beta) + b[cluster[i]]; \\ CHANGED FROM <- 
     }
     y ~ normal(yHat, sigma); // likelihood
     b_raw ~ normal(0, 1);
