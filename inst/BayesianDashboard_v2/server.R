@@ -13,27 +13,9 @@ library(easybayesian)
 shinyServer(function(input, output, session) {
   
   # This will be read from the database in the production version
-  db <- list(lessthan = FALSE)
-  
-  output$Q_BD_1 <- renderUI({
-    increase_decrease <- ifelse(db$lessthan, 'decrease', 'increase')
-    div(
-      HTML(sprintf('<p>What is the minimum %s on the outcome that qualifies as success? 
-  Think in terms of the outcome variable you chose. For example, if it is a reading test score, would a one point increase, on average, be a meaningful %s?  What about 5 points? This dashboard will calculate the probability that the app has an effect at least as large as the minimum you choose here.
-  Given that implementing %s would [COST], I would consider any %s larger than',
-      increase_decrease,
-      increase_decrease,
-      '[Q_1]',
-      increase_decrease)),
-      tags$input(
-        id = "Q_BD_1",
-        type="number",
-        value = 5,
-        min = 1, 
-        max = 100, 
-        style = "width:40px"),
-    HTML('units on the outcome a success.'))
-  })
+  db <- list(
+    lessthan = FALSE,
+    Q_BD_1 = 1)
   
   results <- reactiveValues()
   # Load the chosen dataset
@@ -115,45 +97,6 @@ shinyServer(function(input, output, session) {
       selected = NULL,
       options = list(placeholder = "Select the cluster variable")
     )
-  })
-  
-  output$Q_BD_2ab <- renderUI({
-    increase_decrease <- ifelse(db$lessthan, 'decrease', 'increase')
-    
-    div(
-      HTML(sprintf(
-        "<p>At the end of this evaluation you will have new evidence on the app's effectiveness to inform decisions you need to make. Unfortunately, it is very rare to have absolute certainty. For example, we may be able to conclude that the probability that the intervention %s the outcome by %s or more units is 95%%, 75%%, or 50%%.</p>
-        <p>What is the probability that you find acceptable to act as if you knew that with certainty that the intervention had the intended effect?</p>",
-        increase_decrease,
-        input$Q_BD_1
-      )),
-      tags$ul(
-        tags$li(
-          HTML(sprintf("If we find that the probability that the app moves the needle by %s or more units is", input$Q_BD_1)),
-          tags$input(
-            id = "Q_BD_2a",
-            type = "number", 
-            value = 75,
-            min = 1, 
-            max = 100,
-            style = "width:40px"),
-          HTML("%, I will act as if the app did move the needle. (The higher a number you choose, the higher the \"bar\" for success)")
-        ),
-        tags$p(),
-        tags$li(
-          HTML(sprintf("If we find that the probability that the app moves the needle by %s or more units is less than", input$Q_BD_1)),
-          tags$input(
-            id = "Q_BD_2b",
-            type = "number", 
-            value = 50,
-            min = 1, 
-            max = 100,
-            style = "width:40px"),
-          HTML("%, I will act as if the app did move the needle. (The higher a number you choose, the higher the \"bar\" for success)")
-        )
-      )
-    )
-    
   })
   
   output$Q_BD_3 <- renderUI({
@@ -282,12 +225,12 @@ shinyServer(function(input, output, session) {
         posterior <- posteriorplot(
           model = grade_output,
           parameter = input$trt_var , # input$trt_var, Treatment works
-          cutoff = input$Q_BD_1, credibleIntervalWidth = input$Q_BD_3 / 100,
+          cutoff = db$Q_BD_1, credibleIntervalWidth = input$Q_BD_3 / 100,
           lessthan = db$lessthan)
         
         interpretation <- interpret(model = grade_output,
                   name = input$trt_var,
-                  cutoff = input$Q_BD_1,
+                  cutoff = db$Q_BD_1,
                   credible = input$Q_BD_3 / 100,
                   lessthan = db$lessthan)
         

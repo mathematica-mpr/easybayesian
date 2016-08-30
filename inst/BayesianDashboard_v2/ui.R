@@ -57,39 +57,16 @@ htmlTemplate("template.html",
       uiOutput('ClusterVar')
      )
    ),
-   outcome_change = html_step(
-     header = 'STEP 6',
-     subheader = 'Minimum change',
-     info = uiOutput('Q_BD_1')
-   ),
    grade_var = html_step(
-     header = 'STEP 7',
+     header = 'STEP 6',
      subheader = 'Should analysis be conducted by grade?',
      info = '<p>In some cases it is important that analysis be conducted within groups of students in the same grade. If this does not matter for your evaluation, leave this as "combine all grades" in the select menu. If you want to analyze students separtely by grade, please select the name of the variable that indicates student grades.</p>',
      action = html_action(
        uiOutput('grade_var')
      )
    ),
-   cutoff = html_step(
-     header = 'STEP 8',
-     subheader = 'Cutoff',
-     info = '<p>Select a cutoff value.</p>',
-     action = html_action(
-      numericInput(
-        inputId = 'cutoff',
-        label = '',
-        value = 0,
-        step = 0.01
-      )
-     )
-   ),
-   decisions = html_step(
-     header = 'STEP 9',
-     subheader = 'Plan decisions based on your findings',
-     info = uiOutput('Q_BD_2ab')
-   ),
    credible_interval = html_step(
-     header = NULL,
+     header = 'STEP 7',
      subheader = 'Credible interval',
      info = uiOutput('Q_BD_3')
    ),
