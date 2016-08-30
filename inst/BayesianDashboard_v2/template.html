@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- template.html -->
+<html>
+  <head>
+    {{ headContent() }}
+    {{ header }}
+  </head>
+<body>
+  <div id="container">
+    <div class="header-section">
+      {{ title }}
+    </div>
+    <div class="body-section">
+      {{ upload_data }}
+      {{ outcome_var }}
+      {{ treatment_var }}
+      {{ control_vars }}
+      {{ cluster_var }}
+      {{ outcome_change }}
+      {{ grade_var }}
+      {{ decisions }}
+      {{ credible_interval }}
+    </div>
+    <hr>
+    <div class="action-buttons">
+      {{ analyze_button }}
+    </div>
+    <hr>
+      {{ output_by_grade }}
+    <hr>
+  </div>
+</body>
+</html>
