@@ -44,9 +44,9 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
   if(clustered){
-    createClusteredStanfile()
+    modelString <- createClusteredStanfile()
   }else{
-    createStanfile()
+    modelString <- createStanfile()
   }
 
   outcome <- as.character(formula)[2]
@@ -85,7 +85,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
                   x = as.matrix(df1Rescaled[,covariates]),
                   cluster = factor(df1Rescaled[,cluster])) ### CHANGED FROM as.numeric(factor(df1Rescaled[,cluster])))
     # compile the model and run the sampler
-    fit <- stan('clustered.stan', data=data2, 
+    fit <- stan(model_code = modelString, data=data2, 
                 chains = chains, iter = iter, thin = thin, 
                 cores=min(parallel::detectCores(), 4), seed = 9782)
 
@@ -95,7 +95,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
                   y = df1Rescaled[,outcome],
                   x = as.matrix(df1Rescaled[,covariates]))
     # compile the model and run the sampler
-    fit <- stan('unclustered.stan', data=data2,
+    fit <- stan(model_code = modelString, data=data2,
                 chains = chains, iter = iter, thin = thin,
                 cores=min(parallel::detectCores(), 4), seed = 9782)
   }

@@ -1,9 +1,7 @@
 #' @title Creates stan file
 
 createStanfile <- function(){
-  if(!file.exists('unclustered.stan')){
-    modelString <- "
-        data {
+  "data {
     int<lower=0> N;    // number of data items
     int<lower=0> K;    // number of predictors
     vector[N] y;       // outcome vector
@@ -24,6 +22,4 @@ createStanfile <- function(){
     y ~ normal(yHat, sigma); // likelihood
   }
     "
-    writeLines(modelString, con="unclustered.stan")
-  }
 }

@@ -1,8 +1,7 @@
 #' @title Creates Clustered stan file
 
 createClusteredStanfile <- function(){
-  if(!file.exists('clustered.stan')){
-    modelString <- "
+  "
     data {
     int<lower=0> N;    // number of data items
     int<lower=0> K;    // number of predictors
@@ -34,6 +33,4 @@ createClusteredStanfile <- function(){
     b_raw ~ normal(0, 1);
     }
     "
-    writeLines(modelString, con="clustered.stan")
-  }
 }
