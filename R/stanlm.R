@@ -93,7 +93,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     data2 <- list(N = nrow(df1Rescaled),
                   K = K,
                   y = df1Rescaled[,outcome],
-                  x = as.matrix(df1Rescaled[,covariates))
+                  x = as.matrix(df1Rescaled[,covariates]))
     # compile the model and run the sampler
     fit <- stan('unclustered.stan', data=data2,
                 chains = chains, iter = iter, thin = thin,
