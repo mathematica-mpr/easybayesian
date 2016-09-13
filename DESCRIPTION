@@ -7,7 +7,7 @@ Authors@R: as.person(c(
     "Ignacio Martinez <ignacio@protonmail.ch> [aut, cre]"
   ))
 Description: This package makes runing a linear regression using STAN easy.
-License: MIT
+License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: knitr,
