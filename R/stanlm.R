@@ -10,14 +10,14 @@
 #' @param chains A positive integer specifying number of chains; defaults to 4.
 #' @param iter A positive integer specifying how many iterations for each chain (including warmup). The default is 2000.
 #' @param thin A positive integer specifying the period for saving sample; defaults to 1.
-#' @return A list containing 6 objects: 
-#' \code{tbl} the regression table, 
-#' \code{posteriorSamples} a list containing the posterior samples for beta and alpha, 
-#' \code{fit} the output from \code{\link[rstan]{stan}}, 
-#' \code{credible} the credible interval for the parameters, 
-#' \code{custom.columns}, and 
+#' @return A list containing 6 objects:
+#' \code{tbl} the regression table,
+#' \code{posteriorSamples} a list containing the posterior samples for beta and alpha,
+#' \code{fit} the output from \code{\link[rstan]{stan}},
+#' \code{credible} the credible interval for the parameters,
+#' \code{custom.columns}, and
 #' \code{traceplots}
-#' @seealso \code{\link{regtbl}} for regression table, 
+#' @seealso \code{\link{regtbl}} for regression table,
 #' \code{\link{posteriorplot}} for plotting the posterior distribution,
 #' \code{\link{interpret}} for interpreting the results,
 #' \code{\link{bayesiandashboard}} \code{\link{shiny}} dashboard.
@@ -28,7 +28,7 @@
 #' df1 <- data.frame(
 #'   x1 = rnorm(n = N, mean = 10, sd = 3),
 #'   x2 = runif(n = N, min = 0, max = 10),
-#'   c = sample(LETTERS, size = N, replace = T)) %>% 
+#'   c = sample(LETTERS, size = N, replace = T)) %>%
 #'   mutate(Tr = ifelse(c %in% c("A","E","I","O","U"),
 #'                      yes = 1, no = 0)) %>%
 #'   mutate(y = 0.5*x1 + 0.75*x2 + 0.5*Tr + rnorm(N,0,1))
@@ -38,7 +38,7 @@
 #' @section Vignette:
 #' For more details check \code{vignette("stanlm", package = "easybayesian")}
 
-stanlm <- function(formula, cluster=NULL, data, credible = .95, 
+stanlm <- function(formula, cluster=NULL, data, credible = .95,
                    chains = 4, iter = 2000, thin = 1){
   #browser()
   data <- as.data.frame(data)
@@ -68,8 +68,8 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   meanY <- mean(df1[,outcome])
   sdY <- sd(df1[,outcome])
   if(is.null(dim(df1[,covariates]))){
-    meanX <- mean(df1[,covariates])  
-    sdX <- sd(df1[,covariates])  
+    meanX <- mean(df1[,covariates])
+    sdX <- sd(df1[,covariates])
   }else{
     meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
     sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
@@ -83,10 +83,12 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
                   J = length(unique(df1[,cluster])),
                   y = df1Rescaled[,outcome],
                   x = as.matrix(df1Rescaled[,covariates]),
-                  cluster = factor(df1Rescaled[,cluster])) ### CHANGED FROM as.numeric(factor(df1Rescaled[,cluster])))
+                  cluster = as.numeric(factor(df1Rescaled[,cluster])))
+    # previously cluster = factor(df1Rescaled[,cluster])), but this failed in production
+
     # compile the model and run the sampler
-    fit <- stan(model_code = modelString, data=data2, 
-                chains = chains, iter = iter, thin = thin, 
+    fit <- stan(model_code = modelString, data=data2,
+                chains = chains, iter = iter, thin = thin,
                 cores=min(parallel::detectCores(), 4), seed = 9782)
 
   }else{
@@ -107,7 +109,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   posteriorSamplesAlpha <- extract(fit, pars='alpha')[[1]] * sdY -
     rowSums(t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX*meanX)) +
     meanY
-  
+
   if(K==1){
     betas <- posteriorSamplesBeta %>% as.data.frame() %>%
       summarise_each(funs(mean, sd)) %>%
@@ -123,7 +125,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     names(betas) <- c("coef", "SD")
   }
 
-  
+
 
   ci <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(ci) <- c("lb", "ub")
@@ -138,15 +140,15 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
 
   coef <- bind_rows(betas, alpha)
   rownames(coef) <- c(covariates, "Constant")
-  
+
   log_posterior_n_Rhat <- summary(fit)$summary[,"Rhat"]["lp__"]
   log_posterior_n_eff <- summary(fit)$summary[,"n_eff"]["lp__"]
-  
+
   Rhat <- "R&#770"
   n_eff <- paste0("N","<sub>eff</sub>")
   R_lp <- paste0(Rhat, " log-posterior")
   N_lp <- paste0(n_eff, " log-posterior")
-  
+
 
   if(clustered){
     model <- createTexreg(
@@ -156,7 +158,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
       ci.low = coef$lb,
       ci.up = coef$ub,
       model.name = "Clustered Stan",
-      gof.names = c("N", "Clusters ", 
+      gof.names = c("N", "Clusters ",
                     R_lp, N_lp),
       gof = c(nrow(df1),
               length(unique(df1[,cluster])),
@@ -183,7 +185,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   n_eff <- round(summary(fit)$summary[,"n_eff"][c(2:(K+1),1)],0)
   custom.columns <- list(Rhat=Rhat, n_eff=n_eff)
   traceplots <- traceplot(fit, pars = c(names(fit)[1:(K+1)], "sigma", "lp__"))
-  
+
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
                                                       posteriorSamplesAlpha = posteriorSamplesAlpha),
