@@ -37,7 +37,7 @@ posteriorplot <- function(model, parameter, cutoff=0,
              label=prob, fontface="bold", family="sans") +
     theme_mpr() +
     theme(axis.ticks = element_blank(), axis.text.y = element_blank()) +
-    xlab("Impact") + ylab("")
+    xlab("Impact") + ylab("Posterior Probability")
   r <- ggplot_build(p)
   
   p <- p +
