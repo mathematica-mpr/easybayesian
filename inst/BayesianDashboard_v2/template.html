@@ -2,8 +2,10 @@
 <!-- template.html -->
 <html>
   <head>
+    {{ suppressDependencies("bootstrap") }}
     {{ headContent() }}
     {{ header }}
+    {{ useShinyjs() }}
   </head>
 <body>
   <div id="container">
@@ -11,13 +13,20 @@
       {{ title }}
     </div>
     <div class="body-section">
-      {{ upload_data }}
-      {{ outcome_var }}
-      {{ treatment_var }}
-      {{ control_vars }}
-      {{ cluster_var }}
-      {{ grade_var }}
-      {{ credible_interval }}
+      <h3>STEP 1</h3>
+        {{ upload_data }}
+      <h3>STEP 2</h3>
+        {{ outcome_var }}
+      <h3>STEP 3</h3>
+        {{ treatment_var }}
+      <h3>STEP 4</h3>
+        {{ control_vars }}
+      <h3>STEP 5</h3>
+        {{ cluster_var }}
+      <h3>STEP 6</h3>
+        {{ grade_var }}
+      <h3>STEP 7</h3>
+        {{ credible_interval }}
     </div>
     <hr>
     <div class="action-buttons">
@@ -27,5 +36,6 @@
       {{ output_by_grade }}
     <hr>
   </div>
+  <script src='custom.js'></script>
 </body>
 </html>

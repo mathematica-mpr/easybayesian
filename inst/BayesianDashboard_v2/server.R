@@ -9,6 +9,9 @@ library(shinyBS)
 library(readr)
 library(rstan)
 library(easybayesian)
+library(mongolite)
+library(RJSONIO)
+library(base64enc)
 
 shinyServer(function(input, output, session) {
   
