@@ -13,7 +13,36 @@ library(mongolite)
 library(RJSONIO)
 library(base64enc)
 
+db_live <- FALSE
+
+if (db_live) {
+  db <- try(mongo())
+  db_connected <- !('try-error' %in% class(db))
+} else db_connected <- FALSE
+
 shinyServer(function(input, output, session) {
+  
+  ids <- reactiveValues(
+    user_id = NULL,
+    evaluation_id = NULL)
+
+  observe({
+    ids$user <- input$user_id
+    ids$evaluation <- input$evaluation_id
+  })
+
+  lookup_query <- reactive({
+    toJSON(list(user_id = ids$user, evaluation_id = ids$evaluation))
+  })
+
+  identified <- reactive({
+    if (db_live && db_connected) {
+      result <- try(db$find(lookup_query()))
+
+      !('try-error' %in% class(result)) && nrow(result) == 1
+    }
+    else FALSE
+  })
   
   # This will be read from the database in the production version
   db <- list(
@@ -31,8 +60,8 @@ shinyServer(function(input, output, session) {
 
   output$upload_button <- renderUI({
     if (is.null(data())) {
-      placeholder <- 'Upload your data'
-      button_text <- 'Choose File'
+      placeholder <- ''
+      button_text <- 'Click here to choose File'
     } else {
       placeholder <- 'Upload complete'
       button_text <- ''
@@ -46,60 +75,51 @@ shinyServer(function(input, output, session) {
 
 
   #Outcome Var
-  output$OutcomeVars <- renderUI({
-    selectizeInput(
-      "outcome_var",
-      label = h4("Outcome variable"),
-      choices = colnames(data()),
-      multiple = FALSE,
-      selected = NULL,
-      options = list(placeholder = "Select the outcome variable")
-    )
-  })
-
-  #Treatment Var
-  output$TrtVars <- renderUI({
-    selectizeInput(
-      "trt_var",
-      label = h4("Treatment variable"),
-      choices = setdiff(colnames(data()), input$outcome_var),
-      multiple = FALSE,
-      selected = NULL,
-      options = list(placeholder = "Select the treatment variable")
-    )
+  observe({
+    
+    updateSelectizeInput(
+      session = session,
+      inputId = 'outcome_var',
+      choices = colnames(data()))
   })
   
-  # Grade variable
-  output$grade_var <- renderUI({
-    selectizeInput(inputId = "grade_var",
-      label = label_with_help(label = "Grade indicator", id = "grade_var_modal", size=h4),
-      choices = c('combine all grades', setdiff(colnames(data()), input$trt_var)),
-      multiple = TRUE,
-      selected = 'combine all grades',
-      options = list(placeholder = "Select grade variable", maxItems = 1))
+  #Treatment Var
+  observe({
+    
+    updateSelectizeInput(
+      session = session,
+      inputId = 'trt_var',
+      choices = setdiff(colnames(data()), input$outcome_var))
   })
-
+  
   #Control Vars
-  output$Controls <- renderUI({
-    selectizeInput(
-      "control_vars",
-      label = h4("Control variables"),
-      choices = setdiff(colnames(data()), c(input$trt_var, input$outcome_var, input$grade_var)),
-      multiple = TRUE,
-      selected = NULL,
-      options = list(placeholder = "Select control variables")
-    )
+  observe({
+    
+    updateSelectizeInput(
+      session = session,
+      inputId = 'control_vars',
+      choices = setdiff(colnames(data()), c(input$outcome_var, input$trt_var)))
+    
   })
 
   #Clustering Var
-  output$ClusterVar <- renderUI({
-    selectizeInput(
-      "cluster_var", label = h4("Cluster variable"),
-      choices = c("no cluster", setdiff(colnames(data()), c(input$outcome_var, input$trt_var, input$grade_var, input$control_vars))),
-      multiple = FALSE,
-      selected = NULL,
-      options = list(placeholder = "Select the cluster variable")
-    )
+  observe({
+    
+    updateSelectizeInput(
+      session = session,
+      inputId = 'cluster_var',
+      choices = c("no cluster", setdiff(colnames(data()), c(input$outcome_var, input$trt_var, input$control_vars))))
+    
+  })
+  
+  # Grade variable
+  observe({
+
+    updateSelectizeInput(
+      session = session,
+      inputId = 'grade_var',
+      choices = c('combine all grades', setdiff(colnames(data()), c(input$outcome_var, input$trt_var, input$control_vars, input$cluster_var))))
+    
   })
   
   output$Q_BD_3 <- renderUI({
