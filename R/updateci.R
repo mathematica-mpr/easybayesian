@@ -16,6 +16,7 @@ updateci <- function(model, credible){
   rownames(ci) <- model$tbl@coef.names
   custom.columns = model$custom.columns
   traceplots = model$traceplots
+  title <- model$title
 
   if(model$tbl@model.name == "Clustered Stan"){
     model <- createTexreg(
@@ -50,7 +51,8 @@ updateci <- function(model, credible){
                  fit = fit,
                  credible = credible,
                  custom.columns = custom.columns,
-                 traceplots = traceplots)
+                 traceplots = traceplots,
+                 title = title)
   return(output)
 
 }
