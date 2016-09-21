@@ -194,7 +194,7 @@ shinyServer(function(input, output, session) {
         }
         
         if (multiple_grades) lm1$title <- sprintf('Grade %s', grade)
-        else lm1$title <- ''
+        else lm1$title <- 'All grades combined'
         
         results_by_grade[[grade]] <- lm1
       }
@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
         
         
         list(
-          HTML('<h4>%s</h4>', grade_output$title),
+          HTML(sprintf('<h4>%s</h4>', grade_output$title)),
           HTML('<h3>Regression Table</h3>'),
           HTML(
             texreg::htmlreg(grade_output$tbl, star.symbol = star,
