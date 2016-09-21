@@ -17,5 +17,10 @@ $(document).ready( function() {
     },
     1000)
 
+  Shiny.addCustomMessageHandler('confirm_upload', function(message) {
+    $('#browse-button').text('');
+    $('#file-box').attr('placeholder', message);
+  });
+
 }); //<-end document.ready
 
