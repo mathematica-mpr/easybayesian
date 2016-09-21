@@ -263,11 +263,10 @@ shinyServer(function(input, output, session) {
                      interpretation[[2]],
                      "</li></ul>"))
         
+        
         list(
-          h4(grade_output$title),
-          html_step(
-            header = 'Regression Table'
-          ),
+          HTML('<h4>%s</h4>', grade_output$title),
+          HTML('<h3>Regression Table</h3>'),
           HTML(
             texreg::htmlreg(grade_output$tbl, star.symbol = star,
                             custom.note = mynote,
@@ -275,17 +274,11 @@ shinyServer(function(input, output, session) {
                             caption = "",
                             custom.model.names = model.name)
           ),
-          html_step(
-            header = 'MCMC trace plots'
-          ),
+          HTML('<h3>MCMC Trace Plots</h3>'),
           renderPlot(trace),
-          html_step(
-            header = 'Posterior distribution of treatment effect'
-          ),
+          HTML('<h3>Posterior distribution of treatment effect</h3>'),
           renderPlot(posterior),
-          html_step(
-            header = 'Interpretation'
-          ),
+          HTML('<h3>Interpretation</h3>'),
           h4(interpretation)
         ) 
       })
