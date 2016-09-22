@@ -1,3 +1,12 @@
+var checkCookie = setInterval(
+    function() {
+        if (Shiny && document.cookie) {
+          Shiny.onInputChange('cookie', document.cookie);
+          clearInterval(checkCookie);
+        }
+    },
+    1000)
+
 $(document).ready( function() {
 
   $('[data-toggle=collapse]').click( function() {

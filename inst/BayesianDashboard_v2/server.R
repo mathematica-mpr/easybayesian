@@ -27,8 +27,19 @@ shinyServer(function(input, output, session) {
     evaluation_id = NULL)
 
   observe({
-    ids$user <- input$user_id
-    ids$evaluation <- input$evaluation_id
+    # Wait for JS script to detect cookie, then parse and lookup
+    cookie <- input$cookie
+
+    if (db_live && db_connected) {
+      session_query <- toJSON(session_key = cookie)
+
+      user_match <- db$find(session_query)
+
+      if ('data.frame' %in% class(user_match) && nrow(user_match) == 1) {
+        ids$user <- user_match$user_id
+        ids$evaluation <- user_match$evaluation_id
+      }
+    }
   })
 
   lookup_query <- reactive({
