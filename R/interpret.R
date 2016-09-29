@@ -46,7 +46,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   }else {
     out <- list(
       probability = prob,
-      texts <- list(text1, text2))
+      texts = list(text1, text2))
   }
 
   return(out)
