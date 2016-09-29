@@ -86,12 +86,14 @@ htmlTemplate("template.html",
       selected = 'combine all grades',
       options = list(placeholder = "Select grade variable", maxItems = 1))
    ),
-   credible_interval = html_step(
-     header = 'Credible interval',
-     subheader = uiOutput('Q_BD_3'),
-     data.target = "G"
-   ),
+   #credible_interval = html_step(
+  #   header = 'Credible interval',
+  #   subheader = uiOutput('Q_BD_3'),
+  #   data.target = "G"
+  # ),
+   diagnostic_error = htmlOutput('diagnostic_error'),
    analyze_button = actionButton(inputId = "go", label = "Run Analysis!"),
-   output_by_grade = uiOutput('output_by_grade')
+   output_by_grade = uiOutput('output_by_grade'),
+   save_status = htmlOutput('save_status')
 )
 

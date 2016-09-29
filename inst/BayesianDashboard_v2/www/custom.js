@@ -14,6 +14,8 @@ $(document).ready( function() {
     var caret = $(this).find('i');
     caret.toggleClass('fa-caret-right');
     caret.toggleClass('fa-caret-down');
+
+    Shiny.bindAll();
   });
 
   // If collapsible UI elements are initialized with class 'collapse', Shiny doesn't see

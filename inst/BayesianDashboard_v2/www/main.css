@@ -269,3 +269,18 @@ input#file-box {
 	line-height:0;
 }
 
+.means-table {
+  border: 1px #000000 solid;
+  border-spacing: 0;
+}
+
+.stats {
+  text-align: center;
+
+}
+
+td {
+  border: 1px #000000 solid;
+  padding: 10px;
+}
+

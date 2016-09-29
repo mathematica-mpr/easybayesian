@@ -31,7 +31,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
     cutoff,
     " units or more."
   )
-  
+
   text3 <- paste0(
     "There is a ",
     one_minus_prob,
@@ -40,10 +40,14 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
     " units or more."
   )
   if(lessthan){
-    texts <- list(text1, text3)
+    out <- list(
+      probability = one_minus_prob
+      texts = list(text1, text3))
   }else {
-    texts <- list(text1, text2)
+    out <- list(
+      probability = prob,
+      texts <- list(text1, text2))
   }
 
-  return(texts)
+  return(out)
 }

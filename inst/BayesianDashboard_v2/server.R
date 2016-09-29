@@ -13,11 +13,21 @@ library(mongolite)
 library(RJSONIO)
 library(base64enc)
 
-db_live <- FALSE
+db_live <- TRUE
+db_connected <- TRUE
 
 if (db_live) {
-  db <- try(mongo())
-  db_connected <- !('try-error' %in% class(db))
+  db <- 'GateWayToRCTE'
+  collections <- c('users', 'plannexts', 'planquestions', 'impacts')
+
+  db_connections <- list()
+
+  for (collection in collections) {
+    db_con <- try(mongo(db = db, collection = collection))
+
+    if ('try-error' %in% class(db_con)) db_connected <- FALSE
+    else db_connections[[collection]] <- db_con
+  }
 } else db_connected <- FALSE
 
 shinyServer(function(input, output, session) {
@@ -28,37 +38,55 @@ shinyServer(function(input, output, session) {
 
   observe({
     # Wait for JS script to detect cookie, then parse and lookup
-    cookie <- input$cookie
+    #cookie <- input$cookie
+    cookie <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
 
     if (db_live && db_connected) {
-      session_query <- toJSON(session_key = cookie)
+      session_query <- toJSON(list(userSession = cookie))
 
-      user_match <- db$find(session_query)
+      user_match <- db_connections$users$find(
+        session_query, fields = '{}')
 
       if ('data.frame' %in% class(user_match) && nrow(user_match) == 1) {
-        ids$user <- user_match$user_id
+        ids$user <- user_match$`_id`
         ids$evaluation <- user_match$evaluation_id
+
+        isolate({
+          if (is.null(ids$evaluation)) ids$evaluation <- ids$user
+        })
       }
     }
   })
 
-  lookup_query <- reactive({
-    toJSON(list(user_id = ids$user, evaluation_id = ids$evaluation))
+  identified <- reactive({
+    !is.null(ids$user)
   })
 
-  identified <- reactive({
-    if (db_live && db_connected) {
-      result <- try(db$find(lookup_query()))
-
-      !('try-error' %in% class(result)) && nrow(result) == 1
-    }
-    else FALSE
+  lookup_query <- reactive({
+    toJSON(list(
+      userid = list(`$oid` = ids$user)))
+      #evaluationid = list(`$oid` = ids$evaluation)))
   })
 
   # This will be read from the database in the production version
-  db <- list(
-    lessthan = FALSE,
-    Q_BD_1 = 1)
+  db_values <- reactive({
+    if (db_live && db_connected && identified()) {
+      planquestions <- db_connections$planquestions$find(query = lookup_query())
+      plannexts <- db_connections$plannexts$find(query = lookup_query())
+
+      list(
+        direction = tolower(planquestions$Plan_Question_B_3),
+        cutoff = plannexts$Plan_Next_B,
+        probability = plannexts$Plan_Next_C_1)
+    } else {
+      list(
+        direction = 'increased',
+        cutoff = 1,
+        probability = 75)
+    }
+  })
+
+
 
   results <- reactiveValues()
   # Load the chosen dataset
@@ -142,7 +170,7 @@ shinyServer(function(input, output, session) {
   })
 
   data_by_grade <- reactive({
-    if (input$grade_var %in% colnames(data())) {
+    if (!is.null(input$grade_var) && input$grade_var %in% colnames(data())) {
       index <- data()[, input$grade_var]
     }
     else {
@@ -217,7 +245,7 @@ shinyServer(function(input, output, session) {
     lapply(
       results_by_grade,
       updateci,
-      credible = input$Q_BD_3 / 100)
+      credible = db_values$probability / 100)
   })
 
   # Updating by click is no longer supported when analysis is done by grade.
@@ -226,7 +254,7 @@ shinyServer(function(input, output, session) {
   #                      value = round(input$plot_click$x,2))
   # })
 
-  output$output_by_grade <- renderUI({
+  results_combined <- reactive({
 
     lapply(
       lmupdated(),
@@ -249,39 +277,84 @@ shinyServer(function(input, output, session) {
         posterior <- posteriorplot(
           model = grade_output,
           parameter = input$trt_var , # input$trt_var, Treatment works
-          cutoff = db$Q_BD_1, credibleIntervalWidth = input$Q_BD_3 / 100,
-          lessthan = db$lessthan)
+          cutoff = db_values$cutoff, credibleIntervalWidth = db_values$probability / 100,
+          lessthan = (db_values$direction == 'decreased'))
 
         interpretation <- interpret(model = grade_output,
                   name = input$trt_var,
-                  cutoff = db$Q_BD_1,
-                  credible = input$Q_BD_3 / 100,
-                  lessthan = db$lessthan)
+                  cutoff = db_values$cutoff,
+                  credible = db_values$probability / 100,
+                  lessthan = (db_values$direction == 'decreased'))
 
-        interpretation <- HTML(paste0("<ul><li>",
-                     interpretation[[1]],
+        interpretation_html <- HTML(paste0("<ul><li>",
+                     interpretation$texts[[1]],
                      "</li><li>",
-                     interpretation[[2]],
+                     interpretation$texts[[2]],
                      "</li></ul>"))
 
 
         list(
-          HTML(sprintf('<h4>%s</h4>', grade_output$title)),
-          HTML('<h3>Regression Table</h3>'),
-          HTML(
-            texreg::htmlreg(grade_output$tbl, star.symbol = star,
-                            custom.note = mynote,
-                            custom.columns = custom.columns,
-                            caption = "",
-                            custom.model.names = model.name)
+          output = list(
+            HTML(sprintf('<h4>%s</h4>', grade_output$title)),
+            HTML('<h3>Regression Table</h3>'),
+            HTML(
+              texreg::htmlreg(grade_output$tbl, star.symbol = star,
+                              custom.note = mynote,
+                              custom.columns = custom.columns,
+                              caption = "",
+                              custom.model.names = model.name)
+            ),
+            HTML('<h3>MCMC Trace Plots</h3>'),
+            renderPlot(trace),
+            HTML('<h3>Posterior distribution of treatment effect</h3>'),
+            renderPlot(posterior),
+            HTML('<h3>Interpretation</h3>'),
+            h4(interpretation_html)
           ),
-          HTML('<h3>MCMC Trace Plots</h3>'),
-          renderPlot(trace),
-          HTML('<h3>Posterior distribution of treatment effect</h3>'),
-          renderPlot(posterior),
-          HTML('<h3>Interpretation</h3>'),
-          h4(interpretation)
-        )
+          db_input = list(
+            title = grade_output$title,
+            interpretation = interpretation))
+      })
+    })
+
+    output$output_by_grade <- renderUI({
+      lapply(results_combined(),
+        FUN = `[[`,
+        'output')
+    })
+
+    # Save required results to database
+    observe({
+      results <- results_combined()
+
+      isolate({
+        if (db_live && db_connected && identified()) {
+
+          db_results <- lapply(
+            results,
+            FUN = `[[`,
+            'db_input')
+
+          db_results_json <- toJSON(rawToChar(serialize(db_results, connection = NULL, ascii = TRUE)))
+
+          update <- toJSON(
+            list(
+              `$set` = list(
+                results = db_results_json)))
+
+          success <- db_connections$impacts$update(
+            query = lookup_query(),
+            update = update,
+            upsert = TRUE)
+
+           if (!success) {
+             output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try saving again. If the same error occurs, contact the administrator</p></div>'))
+           }
+        }
+        else {
+          output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. The matching tool successfully produced results, including a downloadable file, but these results will not be saved for future use. To save results as part of a full evaluation, please log in and repeat the matching exercise.</p></div>'))
+
+        }
       })
     })
 
