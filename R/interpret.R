@@ -41,7 +41,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   )
   if(lessthan){
     out <- list(
-      probability = one_minus_prob
+      probability = one_minus_prob,
       texts = list(text1, text3))
   }else {
     out <- list(
