@@ -245,7 +245,7 @@ shinyServer(function(input, output, session) {
     lapply(
       results_by_grade,
       updateci,
-      credible = db_values$probability / 100)
+      credible = db_values()$probability / 100)
   })
 
   # Updating by click is no longer supported when analysis is done by grade.
@@ -277,14 +277,14 @@ shinyServer(function(input, output, session) {
         posterior <- posteriorplot(
           model = grade_output,
           parameter = input$trt_var , # input$trt_var, Treatment works
-          cutoff = db_values$cutoff, credibleIntervalWidth = db_values$probability / 100,
-          lessthan = (db_values$direction == 'decreased'))
+          cutoff = db_values()$cutoff, credibleIntervalWidth = db_values()$probability / 100,
+          lessthan = (db_values()$direction == 'decreased'))
 
         interpretation <- interpret(model = grade_output,
                   name = input$trt_var,
-                  cutoff = db_values$cutoff,
-                  credible = db_values$probability / 100,
-                  lessthan = (db_values$direction == 'decreased'))
+                  cutoff = db_values()$cutoff,
+                  credible = db_values()$probability / 100,
+                  lessthan = (db_values()$direction == 'decreased'))
 
         interpretation_html <- HTML(paste0("<ul><li>",
                      interpretation$texts[[1]],
@@ -325,13 +325,13 @@ shinyServer(function(input, output, session) {
 
     # Save required results to database
     observe({
-      results <- results_combined()
+      results_combined()
 
       isolate({
         if (db_live && db_connected && identified()) {
 
           db_results <- lapply(
-            results,
+            results_combined(),
             FUN = `[[`,
             'db_input')
 
