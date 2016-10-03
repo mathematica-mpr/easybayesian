@@ -48,8 +48,8 @@ shinyServer(function(input, output, session) {
         session_query, fields = '{}')
 
       if ('data.frame' %in% class(user_match) && nrow(user_match) == 1) {
-        ids$user <- user_match$`_id`
-        ids$evaluation <- user_match$evaluation_id
+        ids$user <- sanitize(user_match$`_id`)
+        ids$evaluation <- sanitize(user_match$evaluation_id)
 
         isolate({
           if (is.null(ids$evaluation)) ids$evaluation <- ids$user
@@ -75,9 +75,9 @@ shinyServer(function(input, output, session) {
       plannexts <- db_connections$plannexts$find(query = lookup_query())
 
       list(
-        direction = tolower(planquestions$Plan_Question_B_3),
-        cutoff = plannexts$Plan_Next_B,
-        probability = plannexts$Plan_Next_C_1)
+        direction = tolower(sanitize(planquestions$Plan_Question_B_3)),
+        cutoff = sanitize(plannexts$Plan_Next_B),
+        probability = sanitize(plannexts$Plan_Next_C_1))
     } else {
       list(
         direction = 'increased',
@@ -206,7 +206,7 @@ shinyServer(function(input, output, session) {
       for (grade_i in seq_along(names(data_list))) {
         grade <- names(data_list)[grade_i]
 
-        if (multiple_grades) detail <- sprintf('Analyzing grade %s', grade)
+        if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
         else detail <- 'Analyzing data'
 
         setProgress(
@@ -295,7 +295,7 @@ shinyServer(function(input, output, session) {
 
         list(
           output = list(
-            HTML(sprintf('<h4>%s</h4>', grade_output$title)),
+            HTML(sprintf('<h4>%s</h4>', sanitize(grade_output$title))),
             HTML('<h3>Regression Table</h3>'),
             HTML(
               texreg::htmlreg(grade_output$tbl, star.symbol = star,
@@ -312,8 +312,8 @@ shinyServer(function(input, output, session) {
             h4(interpretation_html)
           ),
           db_input = list(
-            title = grade_output$title,
-            interpretation = interpretation))
+            title = sanitize(grade_output$title),
+            interpretation = sanitize(interpretation)))
       })
     })
 
