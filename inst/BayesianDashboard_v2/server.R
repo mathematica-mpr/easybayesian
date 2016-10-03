@@ -313,7 +313,7 @@ shinyServer(function(input, output, session) {
           ),
           db_input = list(
             title = sanitize(grade_output$title),
-            interpretation = sanitize(interpretation)))
+            interpretation = interpretation))
       })
     })
 
