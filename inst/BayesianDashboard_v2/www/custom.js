@@ -1,8 +1,8 @@
 var checkCookie = setInterval(
     function() {
         if (Shiny && document.cookie) {
-          Shiny.onInputChange('cookie', document.cookie);
-          clearInterval(checkCookie);
+          Shiny.onInputChange('connect.sid', document.cookie);
+          //clearInterval(checkCookie);
         }
     },
     1000)
@@ -32,6 +32,10 @@ $(document).ready( function() {
     $('#browse-button').text('');
     $('#file-box').attr('placeholder', message);
   });
+
+  Shiny.addCustomMessageHandler('log', function(message) {
+    console.log(message);
+  })
 
 }); //<-end document.ready
 

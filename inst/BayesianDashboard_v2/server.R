@@ -38,11 +38,14 @@ shinyServer(function(input, output, session) {
 
   observe({
     # Wait for JS script to detect cookie, then parse and lookup
-    #cookie <- input$cookie
-    cookie <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
+    connect.sid <- input$connect.sid
 
-    if (db_live && db_connected) {
-      session_query <- toJSON(list(userSession = cookie))
+    #session$sendCustomMessage('log', sprintf('cookie: %s', connect.sid))
+
+    #cookie <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
+
+    if (db_live && db_connected && !is.null(connect.sid) && connect.sid != '') {
+      session_query <- toJSON(list(userSession = connect.sid))
 
       user_match <- db_connections$users$find(
         session_query, fields = '{}')
