@@ -89,9 +89,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-
-
-  results <- reactiveValues()
   # Load the chosen dataset
   data <- reactive({
     dfile <- input$chosenfile[1, 4]  #<-filename with path is the [1,4] cell in obj
@@ -172,6 +169,36 @@ shinyServer(function(input, output, session) {
 
   })
 
+  diagnostic_error <- reactive({
+
+    if (input$go > 0) {
+
+      isolate({
+
+        diagnostic_data <- data()
+
+        if (is.null(diagnostic_data)) 'No data file has been uploaded, or the file was in an incorrect or corrupted format. Please check the file, or try refreshing the page and uploading again.'
+
+        else if (nrow(diagnostic_data) == 0) 'The uploaded data file does not have any observations. Please check that the correct file was uploaded.'
+
+        else if (is.null(input$outcome_var)) 'No outcome variable is selected. Please select the variable that indicates the outcome data.'
+
+        else if (is.null(input$trt_var)) 'No treatment variable is selected. Please select the variable that indicates which observations used the app/training.'
+
+        else if (!all(diagnostic_data[[input$trt_var]] %in% c(0, 1, NA))) 'Some values of the treatment variable are not 0 or 1 (or missing). Please check that the correct variable is selected, and that the data file contains the correct value for that variable.'
+
+        else if (!all(input$control_vars %in% colnames(diagnostic_data))) 'One or more control variables do not exist in the data file. Check that you did not select the blank line at the top of the matching variable selector.'
+
+        else if (any(sapply(diagnostic_data[, c(input$outcome_var, input$control_vars)], class) == 'character')) 'One or more of the outcome and control variables contains text values. Matching variables should only contain numeric values. Please check that the correct matching variables are selected and that the data file contains the correct values. One common issue is including text missing codes in the data. These should be changed to blank or ".".'
+
+      })
+    }
+  })
+
+  output$diagnostic_error <- renderPrint({
+    HTML(sprintf('<div><p class="shiny-output-error">%s</p></div>', diagnostic_error()))
+  })
+
   data_by_grade <- reactive({
     if (!is.null(input$grade_var) && input$grade_var %in% colnames(data())) {
       index <- data()[, input$grade_var]
@@ -186,69 +213,76 @@ shinyServer(function(input, output, session) {
       FUN = function(x) x)
   })
 
-  observeEvent(input$go, {
+  results_by_grade <- reactive({
 
-    # Run regression
-    if (length(input$control_vars) > 0) {
-      mycontrols <- paste(input$control_vars, collapse = " + ")
-      myformula <-
-        paste0(input$outcome_var, " ~ ", input$trt_var, " + ", mycontrols)
-    }
-    else {
-      myformula <- paste0(input$outcome_var, " ~ ", input$trt_var)
-    }
+    if (input$go > 0) {
 
-    data_list <- data_by_grade()
-    results_by_grade <- list()
+      if (is.null(diagnostic_error())) {
 
-    n_grades <- length(data_list)
-    multiple_grades <- n_grades > 1
+        disable('go')
 
-    withProgress(message = 'Running Bayesian Model', detail = "reading data", value = 0, {
-
-      for (grade_i in seq_along(names(data_list))) {
-        grade <- names(data_list)[grade_i]
-
-        if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
-        else detail <- 'Analyzing data'
-
-        setProgress(
-          message = 'Running Bayesian Model',
-          detail = detail,
-          value = (max(0.5, grade_i - 1) / n_grades))
-
-        grade_data <- data_list[[grade]]
-
-        if(input$cluster_var == "no cluster"){
-          lm1 <- try(stanlm(formula = as.formula(myformula), data = grade_data))
-        }else{
-          lm1 <- try(stanlm(formula = as.formula(myformula), cluster = input$cluster_var, data = grade_data))
+        # Run regression
+        if (length(input$control_vars) > 0) {
+          mycontrols <- paste(input$control_vars, collapse = " + ")
+          myformula <-
+            paste0(input$outcome_var, " ~ ", input$trt_var, " + ", mycontrols)
+        }
+        else {
+          myformula <- paste0(input$outcome_var, " ~ ", input$trt_var)
         }
 
-        if (multiple_grades) lm1$title <- sprintf('Grade %s', grade)
-        else lm1$title <- 'All grades combined'
+        data_list <- data_by_grade()
+        out <- list()
 
-        results_by_grade[[grade]] <- lm1
+        n_grades <- length(data_list)
+        multiple_grades <- n_grades > 1
+
+        withProgress(message = 'Running Bayesian Model', detail = "reading data", value = 0, {
+
+          for (grade_i in seq_along(names(data_list))) {
+            grade <- names(data_list)[grade_i]
+
+            if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
+            else detail <- 'Analyzing data'
+
+            setProgress(
+              message = 'Running Bayesian Model',
+              detail = detail,
+              value = (max(0.5, grade_i - 1) / n_grades))
+
+            grade_data <- data_list[[grade]]
+
+            if(input$cluster_var == "no cluster"){
+              lm1 <- try(stanlm(formula = as.formula(myformula), data = grade_data))
+            }else{
+              lm1 <- try(stanlm(formula = as.formula(myformula), cluster = input$cluster_var, data = grade_data))
+            }
+
+            if (multiple_grades) lm1$title <- sprintf('Grade %s', grade)
+            else lm1$title <- 'All grades combined'
+
+            out[[grade]] <- lm1
+          }
+
+        })
+
+        enable('go')
+
+        setProgress(1)
+
+        out
       }
+    }
+  })
 
-      results[[as.character(length(names(results)) + 1)]] <- results_by_grade
+  results_updated <- reactive({
+    if (input$go > 0) {
 
-      setProgress(1)
-    })
-
-  }) #<-end observeEvent
-
-  lmupdated <- reactive({
-    if (input$go == 0)
-      return()
-    else
-    lista <- reactiveValuesToList(results)
-    results_by_grade <- lista[[length(lista)]]
-
-    lapply(
-      results_by_grade,
-      updateci,
-      credible = db_values()$probability / 100)
+      lapply(
+        results_by_grade(),
+        updateci,
+        credible = db_values()$probability / 100)
+    }
   })
 
   # Updating by click is no longer supported when analysis is done by grade.
@@ -260,11 +294,11 @@ shinyServer(function(input, output, session) {
   results_combined <- reactive({
 
     lapply(
-      lmupdated(),
+      results_updated(),
       FUN = function(grade_output) {
 
         star <- "&#42"
-        #lm <- lmupdated()
+
         mynote <- paste0(star, " 0 outside the ", scales::percent(grade_output$credible), " credible interval.<br>",
                    "The log posterior quantifies the combined posterior density of all model parameters.<br>",
                    "R&#770 is the potential scale reduction factor on split chains (at convergence, R&#770 = 1).<br>",
@@ -351,18 +385,14 @@ shinyServer(function(input, output, session) {
             upsert = TRUE)
 
            if (!success) {
-             output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try saving again. If the same error occurs, contact the administrator</p></div>'))
+             output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try saving again. If the same error occurs, contact the administrator.</p></div>'))
            }
         }
         else {
-          output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. The matching tool successfully produced results, including a downloadable file, but these results will not be saved for future use. To save results as part of a full evaluation, please log in and repeat the matching exercise.</p></div>'))
+          output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. The Bayesian impact tool successfully produced results, but these results will not be saved for future use. To save results as part of a full evaluation, please log in and repeat the impact calculation exercise.</p></div>'))
 
         }
       })
-    })
-
-    observe({
-      shinyjs::toggleState("go",!is.null(input$trt_var) && input$trt_var != "")
     })
 
 })
