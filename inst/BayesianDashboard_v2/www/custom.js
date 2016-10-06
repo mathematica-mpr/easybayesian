@@ -24,7 +24,7 @@ $(document).ready( function() {
   // Ugly, but this is web dev.
   setTimeout(
     function() {
-        $('.collapse-later').addClass('collapse').removeClass('collapse-later');
+        $('.collapse-later').addClass('collapse in').removeClass('collapse-later');
     },
     1000)
 
