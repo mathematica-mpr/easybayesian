@@ -16,7 +16,7 @@ library(MPRDashboards)
 library(sandwich)
 library(lmtest)
 
-db_live <- FALSE
+db_live <- TRUE
 db_connected <- TRUE
 
 if (db_live) {
@@ -292,7 +292,6 @@ shinyServer(function(input, output, session) {
               }
               
               freq_lm1 <- list(
-                model = freq_lm1,
                 impact= freq_impact,
                 se    = freq_se,
                 pvaue = freq_pvalue)
