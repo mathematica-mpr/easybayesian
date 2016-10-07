@@ -271,7 +271,7 @@ shinyServer(function(input, output, session) {
             freq_lm1    <- try(lm(myformula, data = grade_data))
             
             if (!('try-error' %in% class(freq_lm1))) {
-              freq_coef   <- coefficients(summary(freq_lmq))
+              freq_coef   <- coefficients(summary(freq_lm1))
               freq_impact <- freq_coef[input$trt_var, 'Estimate']
               
               if (input$cluster_var == 'no cluster') {
@@ -302,12 +302,11 @@ shinyServer(function(input, output, session) {
               bayesian = bayesian_lm1,
               freq = freq_lm1)
           }
-
+          
+          setProgress(1)
         })
 
         enable('go')
-
-        setProgress(1)
 
         out
       }
@@ -342,26 +341,28 @@ shinyServer(function(input, output, session) {
       FUN = function(grade_output) {
 
         star <- "&#42"
+        
+        bayesian <- grade_output$bayesian
 
-        mynote <- paste0(star, " 0 outside the ", scales::percent(grade_output$credible), " credible interval.<br>",
+        mynote <- paste0(star, " 0 outside the ", scales::percent(bayesian$credible), " credible interval.<br>",
                    "The log posterior quantifies the combined posterior density of all model parameters.<br>",
                    "R&#770 is the potential scale reduction factor on split chains (at convergence, R&#770 = 1).<br>",
                    "N<sub>eff<//sub> is a crude measure of effective sample size."
                    )
         model.name <- paste0("Point Estimate<br>",
-                       "[", scales::percent(grade_output$credible), " CI]")
-        custom.columns <- list("R&#770"=grade_output$custom.columns$Rhat,
-                         "N<sub>eff<//sub>"=grade_output$custom.columns$n_eff)
+                       "[", scales::percent(bayesian$credible), " CI]")
+        custom.columns <- list("R&#770"=bayesian$custom.columns$Rhat,
+                         "N<sub>eff<//sub>"=bayesian$custom.columns$n_eff)
 
-        trace <- grade_output$traceplots
+        trace <- bayesian$traceplots
 
         posterior <- posteriorplot(
-          model = grade_output,
+          model = bayesian,
           parameter = input$trt_var , # input$trt_var, Treatment works
           cutoff = db_values()$cutoff, credibleIntervalWidth = db_values()$probability / 100,
           lessthan = (db_values()$direction == 'decreased'))
 
-        interpretation <- interpret(model = grade_output,
+        interpretation <- interpret(model = bayesian,
                   name = input$trt_var,
                   cutoff = db_values()$cutoff,
                   credible = db_values()$probability / 100,
@@ -376,10 +377,10 @@ shinyServer(function(input, output, session) {
 
         list(
           output = list(
-            HTML(sprintf('<h4>%s</h4>', sanitize(grade_output$title))),
+            HTML(sprintf('<h4>%s</h4>', sanitize(bayesian$title))),
             HTML('<h3>Regression Table</h3>'),
             HTML(
-              texreg::htmlreg(grade_output$tbl, star.symbol = star,
+              texreg::htmlreg(bayesian$tbl, star.symbol = star,
                               custom.note = mynote,
                               custom.columns = custom.columns,
                               caption = "",
@@ -394,7 +395,7 @@ shinyServer(function(input, output, session) {
           ),
           db_input = list(
             bayesian = list(
-              title = sanitize(grade_output$title),
+              title = sanitize(bayesian$title),
               interpretation = interpretation),
             freq = grade_output$freq))
       })
