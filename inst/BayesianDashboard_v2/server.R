@@ -12,8 +12,11 @@ library(easybayesian)
 library(mongolite)
 library(RJSONIO)
 library(base64enc)
+library(MPRDashboards)
+library(sandwich)
+library(lmtest)
 
-db_live <- TRUE
+db_live <- FALSE
 db_connected <- TRUE
 
 if (db_live) {
@@ -230,6 +233,8 @@ shinyServer(function(input, output, session) {
         else {
           myformula <- paste0(input$outcome_var, " ~ ", input$trt_var)
         }
+        
+        myformula <- as.formula(myformula)
 
         data_list <- data_by_grade()
         out <- list()
@@ -253,15 +258,49 @@ shinyServer(function(input, output, session) {
             grade_data <- data_list[[grade]]
 
             if(input$cluster_var == "no cluster"){
-              lm1 <- try(stanlm(formula = as.formula(myformula), data = grade_data))
+              bayesian_lm1 <- try(stanlm(formula = myformula, data = grade_data))
             }else{
-              lm1 <- try(stanlm(formula = as.formula(myformula), cluster = input$cluster_var, data = grade_data))
+              bayesian_lm1 <- try(stanlm(formula = myformula, cluster = input$cluster_var, data = grade_data))
             }
 
-            if (multiple_grades) lm1$title <- sprintf('Grade %s', grade)
-            else lm1$title <- 'All grades combined'
+            if (multiple_grades) bayesian_lm1$title <- sprintf('Grade %s', grade)
+            else bayesian_lm1$title <- 'All grades combined'
 
-            out[[grade]] <- lm1
+            
+            # Calculate frequentist model as well. Results will go in brief appendix.
+            freq_lm1    <- try(lm(myformula, data = grade_data))
+            
+            if (!('try-error' %in% class(freq_lm1))) {
+              freq_coef   <- coefficients(summary(freq_lmq))
+              freq_impact <- freq_coef[input$trt_var, 'Estimate']
+              
+              if (input$cluster_var == 'no cluster') {
+                freq_se     <- freq_coef[input$trt_var, 'Std. Error']
+                freq_pvalue <- freq_coef[input$trt_var, 'Pr(>|t|)']
+              }
+              else {
+                
+                freq_cluster <- clustered.se(
+                  model_result = freq_lm1, 
+                  data = grade_data, 
+                  cluster = as.character(input$cluster_var), 
+                  Tvar = as.character(input$trt_var),
+                  level = 0.95)
+                
+                freq_se     <- freq_cluster$standard.errors[input$trt_var]
+                freq_pvalue <- freq_cluster$p.values[input$trt_var]
+              }
+              
+              freq_lm1 <- list(
+                model = freq_lm1,
+                impact= freq_impact,
+                se    = freq_se,
+                pvaue = freq_pvalue)
+            }
+
+            out[[grade]] <- list(
+              bayesian = bayesian_lm1,
+              freq = freq_lm1)
           }
 
         })
@@ -277,11 +316,16 @@ shinyServer(function(input, output, session) {
 
   results_updated <- reactive({
     if (input$go > 0) {
-
+      
       lapply(
         results_by_grade(),
-        updateci,
-        credible = db_values()$probability / 100)
+        FUN = function(result) {
+          result$bayesian <- updateci(
+            result$bayesian,
+            credible = db_values()$probability / 100)
+          
+          result
+        })
     }
   })
 
@@ -349,8 +393,10 @@ shinyServer(function(input, output, session) {
             h4(interpretation_html)
           ),
           db_input = list(
-            title = sanitize(grade_output$title),
-            interpretation = interpretation))
+            bayesian = list(
+              title = sanitize(grade_output$title),
+              interpretation = interpretation),
+            freq = grade_output$freq))
       })
     })
 
