@@ -373,7 +373,12 @@ shinyServer(function(input, output, session) {
                      interpretation$texts[[2]],
                      "</li></ul>"))
 
-
+        # Save posterior plot to tempfile, will be written to database and inserted into brief appendix as base64 encoded text.
+        temp_plot <- tempfile()
+        png(temp_plot)
+          print(posterior)
+        dev.off(which = dev.cur())
+        
         list(
           output = list(
             HTML(sprintf('<h4>%s</h4>', sanitize(bayesian$title))),
@@ -395,7 +400,8 @@ shinyServer(function(input, output, session) {
           db_input = list(
             bayesian = list(
               title = sanitize(bayesian$title),
-              interpretation = interpretation),
+              interpretation = interpretation,
+              posterior = base64encode(temp_plot)),
             freq = grade_output$freq))
       })
     })
