@@ -45,7 +45,7 @@ shinyServer(function(input, output, session) {
 
     #session$sendCustomMessage('log', sprintf('cookie: %s', connect.sid))
 
-    #cookie <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
+    #connect.sid <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
 
     if (db_live && db_connected && !is.null(connect.sid) && connect.sid != '') {
       session_query <- toJSON(list(userSession = connect.sid))
@@ -233,7 +233,7 @@ shinyServer(function(input, output, session) {
         else {
           myformula <- paste0(input$outcome_var, " ~ ", input$trt_var)
         }
-        
+
         myformula <- as.formula(myformula)
 
         data_list <- data_by_grade()
@@ -266,31 +266,31 @@ shinyServer(function(input, output, session) {
             if (multiple_grades) bayesian_lm1$title <- sprintf('Grade %s', grade)
             else bayesian_lm1$title <- 'All grades combined'
 
-            
+
             # Calculate frequentist model as well. Results will go in brief appendix.
             freq_lm1    <- try(lm(myformula, data = grade_data))
-            
+
             if (!('try-error' %in% class(freq_lm1))) {
               freq_coef   <- coefficients(summary(freq_lm1))
               freq_impact <- freq_coef[input$trt_var, 'Estimate']
-              
+
               if (input$cluster_var == 'no cluster') {
                 freq_se     <- freq_coef[input$trt_var, 'Std. Error']
                 freq_pvalue <- freq_coef[input$trt_var, 'Pr(>|t|)']
               }
               else {
-                
+
                 freq_cluster <- clustered.se(
-                  model_result = freq_lm1, 
-                  data = grade_data, 
-                  cluster = as.character(input$cluster_var), 
+                  model_result = freq_lm1,
+                  data = grade_data,
+                  cluster = as.character(input$cluster_var),
                   Tvar = as.character(input$trt_var),
                   level = 0.95)
-                
+
                 freq_se     <- freq_cluster$standard.errors[input$trt_var]
                 freq_pvalue <- freq_cluster$p.values[input$trt_var]
               }
-              
+
               freq_lm1 <- list(
                 impact= freq_impact,
                 se    = freq_se,
@@ -301,7 +301,7 @@ shinyServer(function(input, output, session) {
               bayesian = bayesian_lm1,
               freq = freq_lm1)
           }
-          
+
           setProgress(1)
         })
 
@@ -314,14 +314,14 @@ shinyServer(function(input, output, session) {
 
   results_updated <- reactive({
     if (input$go > 0) {
-      
+
       lapply(
         results_by_grade(),
         FUN = function(result) {
           result$bayesian <- updateci(
             result$bayesian,
             credible = db_values()$probability / 100)
-          
+
           result
         })
     }
@@ -340,7 +340,7 @@ shinyServer(function(input, output, session) {
       FUN = function(grade_output) {
 
         star <- "&#42"
-        
+
         bayesian <- grade_output$bayesian
 
         mynote <- paste0(star, " 0 outside the ", scales::percent(bayesian$credible), " credible interval.<br>",
@@ -378,7 +378,7 @@ shinyServer(function(input, output, session) {
         png(temp_plot)
           print(posterior)
         dev.off(which = dev.cur())
-        
+
         list(
           output = list(
             HTML(sprintf('<h4>%s</h4>', sanitize(bayesian$title))),
