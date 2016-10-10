@@ -263,8 +263,8 @@ shinyServer(function(input, output, session) {
               bayesian_lm1 <- try(stanlm(formula = myformula, cluster = input$cluster_var, data = grade_data))
             }
 
-            if (multiple_grades) bayesian_lm1$title <- sprintf('Grade %s', grade)
-            else bayesian_lm1$title <- 'All grades combined'
+            if (multiple_grades) title <- sprintf('Grade %s', grade)
+            else title <- 'All grades combined'
 
 
             # Calculate frequentist model as well. Results will go in brief appendix.
@@ -292,14 +292,17 @@ shinyServer(function(input, output, session) {
               }
 
               freq_lm1 <- list(
+                outcome = input$outcome_var,
                 impact= freq_impact,
                 se    = freq_se,
-                pvaue = freq_pvalue)
+                pvalue = freq_pvalue)
             }
 
             out[[grade]] <- list(
               bayesian = bayesian_lm1,
-              freq = freq_lm1)
+              freq = freq_lm1,
+              grade = ifelse(multiple_grades, grade, title),
+              title = title)
           }
 
           setProgress(1)
@@ -381,7 +384,7 @@ shinyServer(function(input, output, session) {
 
         list(
           output = list(
-            HTML(sprintf('<h4>%s</h4>', sanitize(bayesian$title))),
+            HTML(sprintf('<h4>%s</h4>', sanitize(grade_output$title))),
             HTML('<h3>Regression Table</h3>'),
             HTML(
               texreg::htmlreg(bayesian$tbl, star.symbol = star,
@@ -399,10 +402,11 @@ shinyServer(function(input, output, session) {
           ),
           db_input = list(
             bayesian = list(
-              title = sanitize(bayesian$title),
               interpretation = interpretation,
               posterior = base64encode(temp_plot)),
-            freq = grade_output$freq))
+            freq = grade_output$freq,
+            grade = grade_output$grade,
+            title = sanitize(grade_output$title)))
       })
     })
 
