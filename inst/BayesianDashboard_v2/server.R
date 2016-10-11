@@ -21,7 +21,7 @@ db_connected <- TRUE
 
 if (db_live) {
   db <- 'GateWayToRCTE'
-  collections <- c('users', 'plannexts', 'planquestions', 'impacts')
+  collections <- c('users', 'evaluations')
 
   db_connections <- list()
 
@@ -73,17 +73,21 @@ shinyServer(function(input, output, session) {
       userid = list(`$oid` = ids$user)))
       #evaluationid = list(`$oid` = ids$evaluation)))
   })
+  
+  evaluation <- reactive({
+    db_connections$evaluations$find(query = lookup_query())
+  })
 
   # This will be read from the database in the production version
   db_values <- reactive({
     if (db_live && db_connected && identified()) {
-      planquestions <- db_connections$planquestions$find(query = lookup_query())
-      plannexts <- db_connections$plannexts$find(query = lookup_query())
+      planQuestion <- evaluation()$planQuestion
+      planNext <- evaluation()$planNext
 
       list(
-        direction = tolower(sanitize(planquestions$Plan_Question_B_3)),
-        cutoff = sanitize(plannexts$Plan_Next_B),
-        probability = sanitize(plannexts$Plan_Next_C_1))
+        direction = tolower(sanitize(planQuestion$Plan_Question_B_3)),
+        cutoff = sanitize(planNext$Plan_Next_B),
+        probability = sanitize(planNext$Plan_Next_C_1))
     } else {
       list(
         direction = 'increased',
@@ -433,9 +437,10 @@ shinyServer(function(input, output, session) {
           update <- toJSON(
             list(
               `$set` = list(
-                results = db_results_json)))
+                impacts = list(
+                  results = db_results_json))))
 
-          success <- db_connections$impacts$update(
+          success <- db_connections$evaluations$update(
             query = lookup_query(),
             update = update,
             upsert = TRUE)
