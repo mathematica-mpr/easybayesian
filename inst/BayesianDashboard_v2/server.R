@@ -5,6 +5,7 @@
 # *******************************************************************************/
 
 library(shiny)
+library(shinyjs)
 library(shinyBS)
 library(readr)
 library(rstan)
@@ -87,7 +88,7 @@ shinyServer(function(input, output, session) {
       list(
         direction = tolower(sanitize(planQuestion$Plan_Question_B_3)),
         cutoff = sanitize(planNext$Plan_Next_B),
-        probability = sanitize(planNext$Plan_Next_C_1))
+        probability = as.numeric(sanitize(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))))
     } else {
       list(
         direction = 'increased',
