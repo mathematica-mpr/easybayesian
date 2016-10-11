@@ -443,10 +443,10 @@ shinyServer(function(input, output, session) {
            if (!success) {
              output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try saving again. If the same error occurs, contact the administrator.</p></div>'))
            }
-        }
-        else {
-          output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. The Bayesian impact tool successfully produced results, but these results will not be saved for future use. To save results as part of a full evaluation, please log in and repeat the impact calculation exercise.</p></div>'))
-
+          else {
+            output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. Results will not be saved for future use. To save results as part of a full evaluation, please log in before beginning the impact calculation exercise.</p></div>'))
+  
+          }
         }
       })
     })
