@@ -15,7 +15,7 @@ htmlTemplate("template.html",
    ),
    upload_data = html_step(
      header = 'Upload your data',
-     subheader = 'Upload a <a href="#">CSV</a> file of your data. The file should have one row for each person in your sample that you collected outcome data (e.g. test scores) on, and one column for each field (for example, test score and background characteristics). Read <a href="#">this guide</a> for details.',
+     subheader = 'Upload a <a href="#">CSV</a> file of your data. The file should have one row for each person in your sample that you collected outcome data (e.g. test scores) on, and one column for each field (for example, test score and background characteristics). Read <a target="_blank" href="https://edtechrce.org/static/pdf/04.01PrepareYourDataForAnalysis.pdf">this guide</a> for details.',
      data.target = "A",
      action = html_template_file_input(
       placeholder = '',
