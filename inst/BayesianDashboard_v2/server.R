@@ -55,8 +55,8 @@ shinyServer(function(input, output, session) {
         session_query, fields = '{}')
 
       if ('data.frame' %in% class(user_match) && nrow(user_match) == 1) {
-        ids$user <- sanitize(user_match$`_id`)
-        ids$evaluation <- sanitize(user_match$evaluation_id)
+        ids$user <- user_match$`_id`
+        ids$evaluation <- user_match$evaluation_id
 
         isolate({
           if (is.null(ids$evaluation)) ids$evaluation <- ids$user
@@ -74,7 +74,7 @@ shinyServer(function(input, output, session) {
       userid = list(`$oid` = ids$user)))
       #evaluationid = list(`$oid` = ids$evaluation)))
   })
-  
+
   evaluation <- reactive({
     db_connections$evaluations$find(query = lookup_query())
   })
@@ -86,9 +86,9 @@ shinyServer(function(input, output, session) {
       planNext <- evaluation()$planNext
 
       list(
-        direction = tolower(sanitize(planQuestion$Plan_Question_B_3)),
-        cutoff = sanitize(planNext$Plan_Next_B),
-        probability = as.numeric(sanitize(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))))
+        direction = tolower(planQuestion$Plan_Question_B_3),
+        cutoff = planNext$Plan_Next_B,
+        probability = as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE)))
     } else {
       list(
         direction = 'increased',
@@ -411,7 +411,7 @@ shinyServer(function(input, output, session) {
               posterior = base64encode(temp_plot)),
             freq = grade_output$freq,
             grade = grade_output$grade,
-            title = sanitize(grade_output$title)))
+            title = grade_output$title))
       })
     })
 
@@ -451,7 +451,7 @@ shinyServer(function(input, output, session) {
            }
           else {
             output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. Results will not be saved for future use. To save results as part of a full evaluation, please log in before beginning the impact calculation exercise.</p></div>'))
-  
+
           }
         }
       })
