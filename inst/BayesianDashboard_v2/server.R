@@ -249,6 +249,9 @@ shinyServer(function(input, output, session) {
 
         for (grade_i in seq_along(names(data_list))) {
           grade <- names(data_list)[grade_i]
+          
+          session$sendCustomMessage('update-progress-bar',
+                                  100 * grade_i/ (n_grades + 1))
 
           if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
           else detail <- 'Analyzing data'
@@ -307,8 +310,6 @@ shinyServer(function(input, output, session) {
             grade = ifelse(multiple_grades, grade, title),
             title = title)
           
-          session$sendCustomMessage('update-progress-bar',
-                                  100 * grade_i / n_grades)
         }
 
         enable('go')
