@@ -251,7 +251,7 @@ shinyServer(function(input, output, session) {
           grade <- names(data_list)[grade_i]
           
           session$sendCustomMessage('update-progress-bar',
-                                  100 * grade_i/ (n_grades + 1))
+                                  round(100 * grade_i/ (n_grades + 1)))
 
           if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
           else detail <- 'Analyzing data'
@@ -424,7 +424,7 @@ shinyServer(function(input, output, session) {
 
     # Save required results to database
     observe({
-      if (!is.null(results_combined())) {
+      if (!is.null(results_combined()) && length(results_combined()) > 1) {
 
         isolate({
           if (db_live && db_connected && identified()) {
