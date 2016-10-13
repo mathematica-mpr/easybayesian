@@ -37,8 +37,8 @@ if (db_live) {
 shinyServer(function(input, output, session) {
 
   ids <- reactiveValues(
-    user_id = NULL,
-    evaluation_id = NULL)
+    user = NULL,
+    evaluation = NULL)
 
   observe({
     # Wait for JS script to detect cookie, then parse and lookup
@@ -424,38 +424,42 @@ shinyServer(function(input, output, session) {
 
     # Save required results to database
     observe({
-      results_combined()
+      if (!is.null(results_combined())) {
 
-      isolate({
-        if (db_live && db_connected && identified()) {
-
-          db_results <- lapply(
-            results_combined(),
-            FUN = `[[`,
-            'db_input')
-
-          db_results_json <- toJSON(rawToChar(serialize(db_results, connection = NULL, ascii = TRUE)))
-
-          update <- toJSON(
-            list(
-              `$set` = list(
-                impacts = list(
-                  results = db_results_json))))
-
-          success <- db_connections$evaluations$update(
-            query = lookup_query(),
-            update = update,
-            upsert = TRUE)
-
-          if (!success) {
-             output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try saving again. If the same error occurs, contact the administrator.</p></div>'))
+        isolate({
+          if (db_live && db_connected && identified()) {
+  
+            db_results <- lapply(
+              results_combined(),
+              FUN = `[[`,
+              'db_input')
+  
+            db_results_json <- toJSON(rawToChar(serialize(db_results, connection = NULL, ascii = TRUE)))
+  
+            update <- toJSON(
+              list(
+                `$set` = list(
+                  impacts = list(
+                    results = db_results_json))))
+  
+            success <- db_connections$evaluations$update(
+              query = lookup_query(),
+              update = update,
+              upsert = TRUE)
+  
+            if (success) {
+              output$save_status <- renderPrint(h5('Results saved successfully!'))
+            }
+            else {
+               output$save_status <- renderPrint(HTML('<div><p class="shiny-output-error">Your results were not saved due to a database error. Please try again. If the same error occurs, contact the administrator.</p></div>'))
+            }
           }
-        }
-        else {
-          output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. Results will not be saved for future use. To save results as part of a full evaluation, please log in before beginning the impact calculation exercise.</p></div>'))
-
-        }
-      })
+          else {
+            output$save_status <- renderPrint(HTML('<div><p style="color: red;"><strong>Warning:</strong> You are not currently logged in. Results will not be saved for future use. To save results as part of a full evaluation, please log in before beginning the impact calculation exercise.</p></div>'))
+  
+          }
+        })
+      }
     })
 
 })
