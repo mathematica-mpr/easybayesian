@@ -256,11 +256,6 @@ shinyServer(function(input, output, session) {
           if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
           else detail <- 'Analyzing data'
 
-          setProgress(
-            message = 'Running Bayesian Model',
-            detail = detail,
-            value = (max(0.5, grade_i - 1) / n_grades))
-
           grade_data <- data_list[[grade]]
 
           if(input$cluster_var == "no cluster"){
@@ -424,7 +419,7 @@ shinyServer(function(input, output, session) {
 
     # Save required results to database
     observe({
-      if (!is.null(results_combined()) && length(results_combined()) > 1) {
+      if (!is.null(results_combined()) && length(results_combined()) > 0) {
 
         isolate({
           if (db_live && db_connected && identified()) {
