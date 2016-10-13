@@ -312,6 +312,8 @@ shinyServer(function(input, output, session) {
           
         }
 
+        session$sendCustomMessage('update-progress-bar', 100)
+
         enable('go')
 
         out
