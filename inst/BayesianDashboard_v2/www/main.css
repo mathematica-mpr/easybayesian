@@ -279,11 +279,6 @@ input#file-box {
 
 }
 
-td {
-  border: 1px #000000 solid;
-  padding: 10px;
-}
-
 #progress-bar {
   width: 0%;
 }
