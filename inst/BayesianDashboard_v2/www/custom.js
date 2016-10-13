@@ -36,6 +36,13 @@ $(document).ready( function() {
   Shiny.addCustomMessageHandler('log', function(message) {
     console.log(message);
   })
+  
+  Shiny.addCustomMessageHandler('update-progress-bar', function(value) {
+    $('#progress-bar')
+    .css('width', value + '%')
+    .attr('aria-valuenow', value)
+    .text(value + '%');
+  })
 
 }); //<-end document.ready
 

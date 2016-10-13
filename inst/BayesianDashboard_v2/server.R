@@ -247,71 +247,69 @@ shinyServer(function(input, output, session) {
         n_grades <- length(data_list)
         multiple_grades <- n_grades > 1
 
-        withProgress(message = 'Running Bayesian Model', detail = "reading data", value = 0, {
+        for (grade_i in seq_along(names(data_list))) {
+          grade <- names(data_list)[grade_i]
 
-          for (grade_i in seq_along(names(data_list))) {
-            grade <- names(data_list)[grade_i]
+          if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
+          else detail <- 'Analyzing data'
 
-            if (multiple_grades) detail <- sprintf('Analyzing grade %s', sanitize(grade))
-            else detail <- 'Analyzing data'
+          setProgress(
+            message = 'Running Bayesian Model',
+            detail = detail,
+            value = (max(0.5, grade_i - 1) / n_grades))
 
-            setProgress(
-              message = 'Running Bayesian Model',
-              detail = detail,
-              value = (max(0.5, grade_i - 1) / n_grades))
+          grade_data <- data_list[[grade]]
 
-            grade_data <- data_list[[grade]]
-
-            if(input$cluster_var == "no cluster"){
-              bayesian_lm1 <- try(stanlm(formula = myformula, data = grade_data))
-            }else{
-              bayesian_lm1 <- try(stanlm(formula = myformula, cluster = input$cluster_var, data = grade_data))
-            }
-
-            if (multiple_grades) title <- sprintf('Grade %s', grade)
-            else title <- 'All grades combined'
-
-
-            # Calculate frequentist model as well. Results will go in brief appendix.
-            freq_lm1    <- try(lm(myformula, data = grade_data))
-
-            if (!('try-error' %in% class(freq_lm1))) {
-              freq_coef   <- coefficients(summary(freq_lm1))
-              freq_impact <- freq_coef[input$trt_var, 'Estimate']
-
-              if (input$cluster_var == 'no cluster') {
-                freq_se     <- freq_coef[input$trt_var, 'Std. Error']
-                freq_pvalue <- freq_coef[input$trt_var, 'Pr(>|t|)']
-              }
-              else {
-
-                freq_cluster <- clustered.se(
-                  model_result = freq_lm1,
-                  data = grade_data,
-                  cluster = as.character(input$cluster_var),
-                  Tvar = as.character(input$trt_var),
-                  level = 0.95)
-
-                freq_se     <- freq_cluster$standard.errors[input$trt_var]
-                freq_pvalue <- freq_cluster$p.values[input$trt_var]
-              }
-
-              freq_lm1 <- list(
-                outcome = input$outcome_var,
-                impact= freq_impact,
-                se    = freq_se,
-                pvalue = freq_pvalue)
-            }
-
-            out[[grade]] <- list(
-              bayesian = bayesian_lm1,
-              freq = freq_lm1,
-              grade = ifelse(multiple_grades, grade, title),
-              title = title)
+          if(input$cluster_var == "no cluster"){
+            bayesian_lm1 <- try(stanlm(formula = myformula, data = grade_data))
+          }else{
+            bayesian_lm1 <- try(stanlm(formula = myformula, cluster = input$cluster_var, data = grade_data))
           }
 
-          setProgress(1)
-        })
+          if (multiple_grades) title <- sprintf('Grade %s', grade)
+          else title <- 'All grades combined'
+
+
+          # Calculate frequentist model as well. Results will go in brief appendix.
+          freq_lm1    <- try(lm(myformula, data = grade_data))
+
+          if (!('try-error' %in% class(freq_lm1))) {
+            freq_coef   <- coefficients(summary(freq_lm1))
+            freq_impact <- freq_coef[input$trt_var, 'Estimate']
+
+            if (input$cluster_var == 'no cluster') {
+              freq_se     <- freq_coef[input$trt_var, 'Std. Error']
+              freq_pvalue <- freq_coef[input$trt_var, 'Pr(>|t|)']
+            }
+            else {
+
+              freq_cluster <- clustered.se(
+                model_result = freq_lm1,
+                data = grade_data,
+                cluster = as.character(input$cluster_var),
+                Tvar = as.character(input$trt_var),
+                level = 0.95)
+
+              freq_se     <- freq_cluster$standard.errors[input$trt_var]
+              freq_pvalue <- freq_cluster$p.values[input$trt_var]
+            }
+
+            freq_lm1 <- list(
+              outcome = input$outcome_var,
+              impact= freq_impact,
+              se    = freq_se,
+              pvalue = freq_pvalue)
+          }
+
+          out[[grade]] <- list(
+            bayesian = bayesian_lm1,
+            freq = freq_lm1,
+            grade = ifelse(multiple_grades, grade, title),
+            title = title)
+          
+          session$sendCustomMessage('update-progress-bar',
+                                  100 * grade_i / n_grades)
+        }
 
         enable('go')
 

@@ -284,3 +284,6 @@ td {
   padding: 10px;
 }
 
+#progress-bar {
+  width: 0%;
+}
