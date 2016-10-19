@@ -43,6 +43,8 @@ $(document).ready( function() {
     .attr('aria-valuenow', value)
     .text(value + '%');
   })
+  
+  $('[data-toggle="tooltip"]').tooltip();
 
 }); //<-end document.ready
 
