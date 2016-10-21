@@ -27,7 +27,10 @@ if (db_live) {
   db_connections <- list()
 
   for (collection in collections) {
-    db_con <- try(mongo(db = db, collection = collection))
+    db_con <- try(mongo(
+      url = 'mongodb://db1.edtechrce.org,db2.edtechrce.org',
+      db = db, 
+      collection = collection))
 
     if ('try-error' %in% class(db_con)) db_connected <- FALSE
     else db_connections[[collection]] <- db_con
