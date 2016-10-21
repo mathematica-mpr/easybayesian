@@ -49,8 +49,6 @@ shinyServer(function(input, output, session) {
 
     #session$sendCustomMessage('log', sprintf('cookie: %s', connect.sid))
 
-    #connect.sid <- 'connect.sid=s%3AMTMOmAOTdtyF0sPW5OOJZkdtiD_GTZZw.FUj7Z7v5Dc2%2BC2r4ia88Th5RcLlEZzawJzHhVFPeohc'
-
     if (db_live && db_connected && !is.null(connect.sid) && connect.sid != '') {
       session_query <- toJSON(list(userSession = connect.sid))
 

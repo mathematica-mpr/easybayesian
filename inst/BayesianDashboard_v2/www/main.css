@@ -282,3 +282,7 @@ input#file-box {
 #progress-bar {
   width: 0%;
 }
+
+.warning {
+  color: #b50a0a;
+}

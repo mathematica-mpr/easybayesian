@@ -15,7 +15,8 @@ htmlTemplate("template.html",
    ),
    upload_data = html_step(
      header = 'Upload your data',
-     subheader = 'Upload a <a href="#"><span data-toggle="tooltip" title="To save a CSV file from Excel, go to the &quot;Save As&quot; menu, and when choosing a filename, select &quot;CSV (Comma delimited)&quot; in the &quot;Save as type&quot; selector.">CSV</span></a> file of your data. The file should have one row for each person in your sample that you collected outcome data (e.g. test scores) on, and one column for each field (for example, test score and background characteristics). Read <a target="_blank" href="https://edtechrce.org/static/pdf/04.01PrepareYourDataForAnalysis.pdf">this guide</a> for more detail about how to prepare your file. If you created a matched comparison group in the last step, you should use the file you downloaded there.',
+     subheader = 'Upload a <a href="#"><span data-toggle="tooltip" title="To save a CSV file from Excel, go to the &quot;Save As&quot; menu, and when choosing a filename, select &quot;CSV (Comma delimited)&quot; in the &quot;Save as type&quot; selector.">CSV</span></a> file of your data. The file should have one row for each person in your sample that you collected outcome data (e.g. test scores) on, and one column for each field (for example, test score and background characteristics). Read <a target="_blank" href="https://edtechrce.org/static/pdf/04.01PrepareYourDataForAnalysis.pdf">this guide</a> for more detail about how to prepare your file. If you created a matched comparison group in the last step, you should use the file you downloaded there.
+<p class="warning">Before uploading data, make sure that you have removed any personally identifiable information (PII), such as names. You may want to include a random ID that you can use to this file to link other data sources.</p>',
      data.target = "A",
      action = html_template_file_input(
       placeholder = '',
