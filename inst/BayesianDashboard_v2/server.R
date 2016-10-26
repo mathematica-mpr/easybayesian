@@ -57,29 +57,31 @@ shinyServer(function(input, output, session) {
 
       if ('data.frame' %in% class(user_match) && nrow(user_match) == 1) {
         ids$user <- user_match$`_id`
-        ids$evaluation <- user_match$evaluation_id
+        ids$evaluation <- user_match$evalid
 
-        isolate({
-          if (is.null(ids$evaluation)) ids$evaluation <- ids$user
-        })
+        #isolate({
+        #  if (is.null(ids$evaluation)) ids$evaluation <- ids$user
+        #})
       }
     }
   })
 
   identified <- reactive({
-    !is.null(ids$user)
+    !is.null(ids$user) && !is.null(ids$evaluation)
   })
 
   lookup_query <- reactive({
     toJSON(list(
+      `_id` = list(`$oid` = ids$evaluation),
       userid = list(`$oid` = ids$user)))
-      #evaluationid = list(`$oid` = ids$evaluation)))
   })
 
   evaluation <- reactive({
-    db_connections$evaluations$find(query = lookup_query())
+    if (identified()) {
+      db_connections$evaluations$find(query = lookup_query())
+    }
   })
-
+  
   # This will be read from the database in the production version
   db_values <- reactive({
     if (db_live && db_connected && identified()) {
