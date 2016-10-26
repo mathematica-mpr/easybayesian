@@ -413,9 +413,12 @@ shinyServer(function(input, output, session) {
     })
 
     output$output_by_grade <- renderUI({
-      lapply(results_combined(),
-        FUN = `[[`,
-        'output')
+      list(
+        lapply(results_combined(),
+          FUN = `[[`,
+          'output'),
+        
+        HTML("<p><strong>To learn more</strong> about how this dashboard works, you can review this <a href='https://edtechrce.org/static/pdf/05.02a%20Impact%20Estimation%20Technical%20Appendix.pdf'>technical appendix.</a></p>"))
     })
 
     # Save required results to database
