@@ -84,31 +84,28 @@ shinyServer(function(input, output, session) {
   
   # This will be read from the database in the production version
   db_values <- reactive({
-    # Start with defaults for users not logged in or with incomplete prior steps, only replace with db values if valid
-    out <- list(
-        direction = 'increased',
-        cutoff = 1,
-        probability = 75)
-    
+    out <- NULL
+
     if (db_live && db_connected && identified()) {
       planQuestion <- evaluation()$planQuestion
       planNext <- evaluation()$planNext
       
       direction <- tolower(planQuestion$Plan_Question_B_3)
-      
-      if (!is.null(direction) && length(direction) == 1 && direction %in% c('increased', 'decreased')) out$direction <- direction
-      
       cutoff <- planNext$Plan_Next_B
-      
-      if (!is.null(cutoff) && length(cutoff) == 1 && !is.na(as.numeric(cutoff))) out$cutoff <- cutoff
-      
       probability <- as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))
       
-      if (!is.null(probability) && length(probability) == 1 && !is.na(as.numeric(probability))) out$probability <- probability
-
+      valid <- (!is.null(direction) && length(direction) == 1 && direction %in% c('increased', 'decreased')) &&
+        (!is.null(cutoff) && length(cutoff) == 1 && !is.na(as.numeric(cutoff))) &&
+        (!is.null(probability) && length(probability) == 1 && !is.na(as.numeric(probability)))
+      
+      if (valid) out <- list(
+        direction = direction,
+        cutoff = cutoff,
+        probability = probability)
+      
     }
-    
-    out
+
+    out    
   })
 
   # Load the chosen dataset
@@ -198,8 +195,10 @@ shinyServer(function(input, output, session) {
       isolate({
 
         diagnostic_data <- data()
+        
+        if (is.null(db_values())) 'It looks like some required tools were not completed. Please return to the tool list and complete all tools prior to this step. If you have completed all tools but still see this message, contact an administrator'
 
-        if (is.null(diagnostic_data)) 'No data file has been uploaded, or the file was in an incorrect or corrupted format. Please check the file, or try refreshing the page and uploading again.'
+        else if (is.null(diagnostic_data)) 'No data file has been uploaded, or the file was in an incorrect or corrupted format. Please check the file, or try refreshing the page and uploading again.'
 
         else if (nrow(diagnostic_data) == 0) 'The uploaded data file does not have any observations. Please check that the correct file was uploaded.'
 
