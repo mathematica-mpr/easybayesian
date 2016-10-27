@@ -84,20 +84,31 @@ shinyServer(function(input, output, session) {
   
   # This will be read from the database in the production version
   db_values <- reactive({
-    if (db_live && db_connected && identified()) {
-      planQuestion <- evaluation()$planQuestion
-      planNext <- evaluation()$planNext
-
-      list(
-        direction = tolower(planQuestion$Plan_Question_B_3),
-        cutoff = planNext$Plan_Next_B,
-        probability = as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE)))
-    } else {
-      list(
+    # Start with defaults for users not logged in or with incomplete prior steps, only replace with db values if valid
+    out <- list(
         direction = 'increased',
         cutoff = 1,
         probability = 75)
+    
+    if (db_live && db_connected && identified()) {
+      planQuestion <- evaluation()$planQuestion
+      planNext <- evaluation()$planNext
+      
+      direction <- tolower(planQuestion$Plan_Question_B_3)
+      
+      if (!is.null(direction) && length(direction) == 1 && direction %in% c('increased', 'decreased')) out$direction <- direction
+      
+      cutoff <- planNext$Plan_Next_B
+      
+      if (!is.null(cutoff) && length(cutoff) == 1 && !is.na(as.numeric(cutoff))) out$cutoff <- cutoff
+      
+      probability <- as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))
+      
+      if (!is.null(probability) && length(probability) == 1 && !is.na(as.numeric(probability))) out$probability <- probability
+
     }
+    
+    out
   })
 
   # Load the chosen dataset
