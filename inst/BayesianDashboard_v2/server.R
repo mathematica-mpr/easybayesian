@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
 
         diagnostic_data <- data()
         
-        if (is.null(db_values())) 'It looks like some required tools were not completed. Please return to the tool list and complete all tools prior to this step. If you have completed all tools but still see this message, contact an administrator'
+        if (is.null(db_values())) 'It looks like some required tools were not completed. Please return to the tool list and complete all tools prior to this step. If you have completed all tools but still see this message, contact an administrator.'
 
         else if (is.null(diagnostic_data)) 'No data file has been uploaded, or the file was in an incorrect or corrupted format. Please check the file, or try refreshing the page and uploading again.'
 
@@ -217,7 +217,9 @@ shinyServer(function(input, output, session) {
   })
 
   output$diagnostic_error <- renderPrint({
-    HTML(sprintf('<div><p class="shiny-output-error">%s</p></div>', diagnostic_error()))
+    if (!is.null(diagnostic_error())) {
+      HTML(sprintf('<div><p class="shiny-output-error">%s</p></div>', diagnostic_error()))
+    }
   })
 
   data_by_grade <- reactive({
