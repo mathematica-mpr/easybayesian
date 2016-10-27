@@ -78,7 +78,9 @@ shinyServer(function(input, output, session) {
 
   evaluation <- reactive({
     if (identified()) {
-      db_connections$evaluations$find(query = lookup_query())
+      # Use capture.output here to prevent the default mongolite stdout from getting carried through into error messages if the current evaluation has incomplete tools that prevent impact estimation"
+      output <- capture.output(out <- db_connections$evaluations$find(query = lookup_query()))
+      out
     }
   })
   
