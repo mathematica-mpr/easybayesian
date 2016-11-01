@@ -1,7 +1,7 @@
 var checkCookie = setInterval(
     function() {
         if (Shiny && document.cookie) {
-          Shiny.onInputChange('connect.sid', document.cookie);
+          Shiny.onInputChange('cookie', document.cookie);
           //clearInterval(checkCookie);
         }
     },
