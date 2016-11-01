@@ -45,7 +45,7 @@ shinyServer(function(input, output, session) {
 
   observe({
     # Wait for JS script to detect cookie, then parse and lookup
-    connect.sid <- sub('.*(connect.sid=[^;]+).*', '\\1', input$cookie)
+    connect.sid <- sub('.*connect.sid=([^;]+).*', '\\1', input$cookie)
 
     #session$sendCustomMessage('log', sprintf('cookie: %s', connect.sid))
 
