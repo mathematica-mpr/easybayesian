@@ -94,7 +94,8 @@ shinyServer(function(input, output, session) {
       
       direction <- tolower(planQuestion$Plan_Question_B_3)
       cutoff <- planNext$Plan_Next_B
-      probability <- as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))
+      #probability <- as.numeric(gsub('%', '', planNext$Plan_Next_C_1, fixed=TRUE))
+      probability <- 75
       
       valid <- (!is.null(direction) && length(direction) == 1 && direction %in% c('increase', 'decrease')) &&
         (!is.null(cutoff) && length(cutoff) == 1 && !is.na(as.numeric(cutoff))) &&
