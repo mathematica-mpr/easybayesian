@@ -403,19 +403,20 @@ shinyServer(function(input, output, session) {
 
         list(
           output = list(
-            HTML(sprintf('<h4>%s</h4>', sanitize(grade_output$title))),
-            HTML('<h3>Regression Table</h3>'),
-            HTML(
-              texreg::htmlreg(bayesian$tbl, star.symbol = star,
-                              custom.note = mynote,
-                              custom.columns = custom.columns,
-                              caption = "",
-                              custom.model.names = model.name)
-            ),
-            HTML('<h3>MCMC Trace Plots</h3>'),
-            renderPlot(trace),
-            HTML('<h3>Posterior distribution of treatment effect</h3>'),
-            renderPlot(posterior),
+            # As of 2016-12-01, only outputting the interpretation bullets to the screen.
+            # HTML(sprintf('<h4>%s</h4>', sanitize(grade_output$title))),
+            # HTML('<h3>Regression Table</h3>'),
+            # HTML(
+            #   texreg::htmlreg(bayesian$tbl, star.symbol = star,
+            #                   custom.note = mynote,
+            #                   custom.columns = custom.columns,
+            #                   caption = "",
+            #                   custom.model.names = model.name)
+            # ),
+            # HTML('<h3>MCMC Trace Plots</h3>'),
+            # renderPlot(trace),
+            # HTML('<h3>Posterior distribution of treatment effect</h3>'),
+            # renderPlot(posterior),
             HTML('<h3>Interpretation</h3>'),
             h4(interpretation_html)
           ),
