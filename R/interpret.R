@@ -17,7 +17,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   text1 <- paste0(
     "There is a ",
     credible,
-    " probability that the true impact of the intervention is between ",
+    " probability that the true impact of the technology is between ",
     lb,
     " and ",
     ub,
@@ -27,7 +27,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   text2 <- paste0(
     "There is a ",
     prob,
-    " probability that the intervention increases the outcome by ",
+    " probability that the technology increases the outcome by ",
     cutoff,
     " units or more."
   )
@@ -35,7 +35,7 @@ interpret <- function(model, name, cutoff, credible=.95, lessthan=FALSE){
   text3 <- paste0(
     "There is a ",
     one_minus_prob,
-    " probability that the intervention decreases the outcome by ",
+    " probability that the technology decreases the outcome by ",
     cutoff,
     " units or more."
   )
