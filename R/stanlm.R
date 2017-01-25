@@ -123,6 +123,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
       tidyr::spread(var, value) %>% select(-stat) %>%
       t() %>% as.data.frame()
     names(betas) <- c("coef", "SD")
+    betas <- betas[paste0("V", 1:nrow(betas)),]
   }
 
 
