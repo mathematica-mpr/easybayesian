@@ -5,7 +5,7 @@
 \title{STAN linear model}
 \usage{
 stanlm(formula, cluster = NULL, data, credible = 0.95, chains = 4,
-  iter = 2000, thin = 1)
+  iter = 2000, thin = 1, adapt_delta = 0.8)
 }
 \arguments{
 \item{formula}{A symbolic description of the model to be fitted.}
@@ -23,12 +23,12 @@ stanlm(formula, cluster = NULL, data, credible = 0.95, chains = 4,
 \item{thin}{A positive integer specifying the period for saving sample; defaults to 1.}
 }
 \value{
-A list containing 6 objects: 
-\code{tbl} the regression table, 
-\code{posteriorSamples} a list containing the posterior samples for beta and alpha, 
-\code{fit} the output from \code{\link[rstan]{stan}}, 
-\code{credible} the credible interval for the parameters, 
-\code{custom.columns}, and 
+A list containing 6 objects:
+\code{tbl} the regression table,
+\code{posteriorSamples} a list containing the posterior samples for beta and alpha,
+\code{fit} the output from \code{\link[rstan]{stan}},
+\code{credible} the credible interval for the parameters,
+\code{custom.columns}, and
 \code{traceplots}
 }
 \section{Vignette}{
@@ -42,7 +42,7 @@ N <- 1000
 df1 <- data.frame(
   x1 = rnorm(n = N, mean = 10, sd = 3),
   x2 = runif(n = N, min = 0, max = 10),
-  c = sample(LETTERS, size = N, replace = T)) \%>\% 
+  c = sample(LETTERS, size = N, replace = T)) \%>\%
   mutate(Tr = ifelse(c \%in\% c("A","E","I","O","U"),
                      yes = 1, no = 0)) \%>\%
   mutate(y = 0.5*x1 + 0.75*x2 + 0.5*Tr + rnorm(N,0,1))
@@ -51,7 +51,7 @@ regtbl(fit1, type = "html")
 posteriorplot(model = fit1, parameter = "Tr", cutoff = 0.4)
 }
 \seealso{
-\code{\link{regtbl}} for regression table, 
+\code{\link{regtbl}} for regression table,
 \code{\link{posteriorplot}} for plotting the posterior distribution,
 \code{\link{interpret}} for interpreting the results,
 \code{\link{bayesiandashboard}} \code{\link{shiny}} dashboard.

@@ -39,7 +39,8 @@
 #' For more details check \code{vignette("stanlm", package = "easybayesian")}
 
 stanlm <- function(formula, cluster=NULL, data, credible = .95,
-                   chains = 4, iter = 2000, thin = 1){
+                   chains = 4, iter = 2000, thin = 1, 
+                   adapt_delta = 0.8){
   #browser()
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
@@ -89,7 +90,8 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     # compile the model and run the sampler
     fit <- stan(model_code = modelString, data=data2,
                 chains = chains, iter = iter, thin = thin,
-                cores=min(parallel::detectCores(), 4), seed = 9782)
+                cores=min(parallel::detectCores(), 4), seed = 9782,
+                control = list(adapt_delta = adapt_delta))
 
   }else{
     data2 <- list(N = nrow(df1Rescaled),
