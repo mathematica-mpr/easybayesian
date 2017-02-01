@@ -32,5 +32,6 @@ createClusteredStanfile <- function(){
     y ~ normal(yHat, sigma); // likelihood
     b_raw ~ normal(0, 1);
     }
+
     "
 }

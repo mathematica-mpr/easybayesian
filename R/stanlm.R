@@ -106,10 +106,10 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
 
   if(length(fit@model_pars) == 0) stop('No outcome and/or predictor variables were found :(') ### CHANGED FROM Something went wrong and the fit object is empty :(
 
-  posteriorSamplesBeta <- t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX)
+  posteriorSamplesBeta <- t(t(rstan::extract(fit, pars='beta')[[1]]) * sdY/sdX)
 
-  posteriorSamplesAlpha <- extract(fit, pars='alpha')[[1]] * sdY -
-    rowSums(t(t(extract(fit, pars='beta')[[1]]) * sdY/sdX*meanX)) +
+  posteriorSamplesAlpha <- rstan::extract(fit, pars='alpha')[[1]] * sdY -
+    rowSums(t(t(rstan::extract(fit, pars='beta')[[1]]) * sdY/sdX*meanX)) +
     meanY
 
   if(K==1){
