@@ -40,7 +40,8 @@
 
 stanlm <- function(formula, cluster=NULL, data, credible = .95,
                    chains = 4, iter = 2000, thin = 1, 
-                   adapt_delta = 0.8){
+                   adapt_delta = 0.8,
+                   stepsize = 1, max_treedepth = 10){
   #browser()
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
@@ -91,7 +92,8 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     fit <- stan(model_code = modelString, data=data2,
                 chains = chains, iter = iter, thin = thin,
                 cores=min(parallel::detectCores(), 4), seed = 9782,
-                control = list(adapt_delta = adapt_delta))
+                control = list(adapt_delta = adapt_delta,
+                               stepsize = stepsize, max_treedepth = max_treedepth))
 
   }else{
     data2 <- list(N = nrow(df1Rescaled),
