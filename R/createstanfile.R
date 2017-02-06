@@ -11,16 +11,17 @@ createStanfile <- function(){
   parameters {
     real alpha;                   // intercept
     vector[K] beta;               // coefficients for predictors
-    real<lower=0,upper=10> sigma; // error sd
+    real<lower=0> sigma; // error sd
   }
 
   model {
     real yHat[N];
     for(i in 1:N){
-      yHat[i] = alpha + dot_product(x[i], beta); // CHANGED FROM <- 
+      yHat[i] = alpha + dot_product(x[i], beta); 
     }
     y ~ normal(yHat, sigma); // likelihood
   }
+    beta ~ normal(0,1); 
 
     "
 }
