@@ -20,8 +20,8 @@ createStanfile <- function(){
       yHat[i] = alpha + dot_product(x[i], beta); 
     }
     y ~ normal(yHat, sigma); // likelihood
-  }
     beta ~ normal(0,1); 
+    }
 
     "
 }
