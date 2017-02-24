@@ -41,20 +41,24 @@
 stanlm <- function(formula, cluster=NULL, data, credible = .95,
                    chains = 4, iter = 2000, thin = 1, 
                    adapt_delta = 0.8,
-                   stepsize = 1, max_treedepth = 10){
-  #browser()
+                   stepsize = 1, max_treedepth = 10, DEBUG=FALSE, cores = NULL){
+  if(DEBUG) browser()
+  
+  if(is.null(cores)) cores <- min(parallel::detectCores(), 4)
+  
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
   if(clustered){
-    modelString <- createClusteredStanfile()
+    stancode  <- createClusteredStanfile()
   }else{
-    modelString <- createStanfile()
+    stancode  <- createStanfile()
   }
-
+  mod <- stan_model(model_code = stancode)
+  
   outcome <- as.character(formula)[2]
   covariates <- attr(terms(formula), 'term.labels')
   # if(clustered) cluster <- as.character(arguments$cluster)
-
+  
   ####
   K <- length(covariates)
   # stan can't handle missing data
@@ -76,7 +80,7 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     meanX <- df1[,covariates] %>% summarise_each(funs(mean)) %>% as.numeric()
     sdX <- df1[,covariates] %>% summarise_each(funs(sd)) %>% as.numeric()
   }
-
+  
   df1Rescaled <- scale(df1) ### CHANGED FROM as.data.frame(scale(df1))
   # put data in a list for stan
   if(clustered){
@@ -87,33 +91,41 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
                   x = as.matrix(df1Rescaled[,covariates]),
                   cluster = as.numeric(factor(df1Rescaled[,cluster])))
     # previously cluster = factor(df1Rescaled[,cluster])), but this failed in production
-
+    
     # compile the model and run the sampler
-    fit <- stan(model_code = modelString, data=data2,
-                chains = chains, iter = iter, thin = thin,
-                cores=min(parallel::detectCores(), 4), seed = 9782,
-                control = list(adapt_delta = adapt_delta,
-                               stepsize = stepsize, max_treedepth = max_treedepth))
-
+    # fit <- stan(model_code = modelString, data=data2,
+    #             chains = chains, iter = iter, thin = thin,
+    #             cores=min(parallel::detectCores(), 4), seed = 9782,
+    #             control = list(adapt_delta = adapt_delta,
+    #                            stepsize = stepsize, max_treedepth = max_treedepth))
+    
+    
+    
   }else{
     data2 <- list(N = nrow(df1Rescaled),
                   K = K,
                   y = df1Rescaled[,outcome],
                   x = as.matrix(df1Rescaled[,covariates]))
-    # compile the model and run the sampler
-    fit <- stan(model_code = modelString, data=data2,
-                chains = chains, iter = iter, thin = thin,
-                cores=min(parallel::detectCores(), 4), seed = 9782)
+    # # compile the model and run the sampler
+    # fit <- stan(model_code = modelString, data=data2,
+    #             chains = chains, iter = iter, thin = thin,
+    #             cores=cores, seed = 9782)
   }
-
+  
+  fit <- sampling(mod, data=data2,
+                  chains = chains, iter = iter, thin = thin,
+                  cores=cores, seed = 9782,
+                  control = list(adapt_delta = adapt_delta,
+                                 stepsize = stepsize, max_treedepth = max_treedepth))
+  
   if(length(fit@model_pars) == 0) stop('No outcome and/or predictor variables were found :(') ### CHANGED FROM Something went wrong and the fit object is empty :(
-
+  
   posteriorSamplesBeta <- t(t(rstan::extract(fit, pars='beta')[[1]]) * sdY/sdX)
-
+  
   posteriorSamplesAlpha <- rstan::extract(fit, pars='alpha')[[1]] * sdY -
     rowSums(t(t(rstan::extract(fit, pars='beta')[[1]]) * sdY/sdX*meanX)) +
     meanY
-
+  
   if(K==1){
     betas <- posteriorSamplesBeta %>% as.data.frame() %>%
       summarise_each(funs(mean, sd)) %>%
@@ -129,32 +141,32 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
     names(betas) <- c("coef", "SD")
     betas <- betas[paste0("V", 1:nrow(betas)),]
   }
-
-
-
+  
+  
+  
   ci <- data.frame(t(sapply(1:K, function(j)credibleInterval(posteriorSamplesBeta[,j], credible))))
   names(ci) <- c("lb", "ub")
   betas <- bind_cols(betas, ci)
-
+  
   alpha <- data.frame(coef = mean(posteriorSamplesAlpha),
                       SD = sd(posteriorSamplesAlpha))
-
+  
   ci <- credibleInterval(posteriorSamplesAlpha, credible)
   ci <- data.frame(lb = ci[[1]], ub = ci[[2]])
   alpha <- bind_cols(alpha, ci)
-
+  
   coef <- bind_rows(betas, alpha)
   rownames(coef) <- c(covariates, "Constant")
-
+  
   log_posterior_n_Rhat <- summary(fit)$summary[,"Rhat"]["lp__"]
   log_posterior_n_eff <- summary(fit)$summary[,"n_eff"]["lp__"]
-
+  
   Rhat <- "R&#770"
   n_eff <- paste0("N","<sub>eff</sub>")
   R_lp <- paste0(Rhat, " log-posterior")
   N_lp <- paste0(n_eff, " log-posterior")
-
-
+  
+  
   if(clustered){
     model <- createTexreg(
       coef.names = rownames(coef),
@@ -190,10 +202,10 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   n_eff <- round(summary(fit)$summary[,"n_eff"][c(2:(K+1),1)],0)
   custom.columns <- list(Rhat=Rhat, n_eff=n_eff)
   traceplots <- traceplot(fit, pars = c(names(fit)[1:(K+1)], "sigma", "lp__"))
-
+  
   output <- list(tbl = model,
                  posteriorSamples = list(posteriorSamplesBeta = posteriorSamplesBeta,
-                                                      posteriorSamplesAlpha = posteriorSamplesAlpha),
+                                         posteriorSamplesAlpha = posteriorSamplesAlpha),
                  fit = fit,
                  credible = credible,
                  custom.columns = custom.columns,
