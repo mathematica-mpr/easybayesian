@@ -49,11 +49,13 @@ stanlm <- function(formula, cluster=NULL, data, credible = .95,
   data <- as.data.frame(data)
   clustered <- !is.null(cluster)
   if(clustered){
-    stancode  <- createClusteredStanfile()
+    #stancode  <- createClusteredStanfile()
+    mod <- clustered_model
   }else{
-    stancode  <- createStanfile()
+    #stancode  <- createStanfile()
+    mod <- unclustere_model
   }
-  mod <- stan_model(model_code = stancode)
+  #mod <- stan_model(model_code = stancode)
   
   outcome <- as.character(formula)[2]
   covariates <- attr(terms(formula), 'term.labels')

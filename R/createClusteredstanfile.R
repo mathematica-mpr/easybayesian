@@ -1,4 +1,5 @@
 #' @title Creates Clustered stan file
+#' @export
 
 createClusteredStanfile <- function(){
   "

@@ -1,4 +1,5 @@
 #' @title Creates stan file
+#' @export
 
 createStanfile <- function(){
   "data {
