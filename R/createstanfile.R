@@ -22,6 +22,7 @@ createStanfile <- function(){
     }
     y ~ normal(yHat, sigma); // likelihood
     beta ~ normal(0,1); 
+    alpha ~ normal(0,1);
     }
 
     "
